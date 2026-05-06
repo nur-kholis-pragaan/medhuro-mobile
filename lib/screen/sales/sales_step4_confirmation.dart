@@ -69,7 +69,7 @@ class _SalesStep4ConfirmationState extends State<SalesStep4Confirmation> {
 
     // Update payment term di provider
     salesProvider.setHeaderInfo(
-      customerId: salesProvider.selectedCustomerId ?? 0,
+      customerId: salesProvider.selectedCustomerId ?? '',
       paymentTermId: selectedPaymentTermId!,
       salesDate: salesProvider.selectedDate,
       transactionDiscount: salesProvider.transactionDiscount,

@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SalesApi {
   Future<SalesDataModel?> createSales({
-    required int customerId,
+    required String customerId,
     required int paymentTermId,
     required String salesDate,
     required int discountAmount,

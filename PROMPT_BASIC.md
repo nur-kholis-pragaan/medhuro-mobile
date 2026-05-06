@@ -1,0 +1,3 @@
+- buatkan model dan api customer
+- gunakan component dari form widget
+- gunakan warna dari color pallet_config.dart

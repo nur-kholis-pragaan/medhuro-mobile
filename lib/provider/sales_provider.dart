@@ -77,7 +77,7 @@ class SalesProvider with ChangeNotifier {
   List<SalesItem> _items = [];
   List<ReturnItem> _returnItems = [];
   int _cashAmount = 0;
-  int? _selectedCustomerId;
+  String? _selectedCustomerId;
   int? _selectedPaymentTermId;
   DateTime _selectedDate = DateTime.now();
   int _transactionDiscount = 0;
@@ -86,7 +86,7 @@ class SalesProvider with ChangeNotifier {
   List<SalesItem> get items => _items;
   List<ReturnItem> get returnItems => _returnItems;
   int get cashAmount => _cashAmount;
-  int? get selectedCustomerId => _selectedCustomerId;
+  String? get selectedCustomerId => _selectedCustomerId;
   int? get selectedPaymentTermId => _selectedPaymentTermId;
   DateTime get selectedDate => _selectedDate;
   int get transactionDiscount => _transactionDiscount;
@@ -279,7 +279,7 @@ class SalesProvider with ChangeNotifier {
 
   /// Persist header info (customer, payment term, date, discount)
   void setHeaderInfo({
-    required int customerId,
+    required String customerId,
     required int paymentTermId,
     required DateTime salesDate,
     required int transactionDiscount,

@@ -5,14 +5,19 @@ import '/config/endpoint_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomerApi {
+  /// Get all customers with pagination and search
   Future<CustomerModel?> getCustomers({
     String? search,
     String? page,
     String? limit,
+    String? sortBy = 'name',
+    String? sort = 'asc',
   }) async {
     try {
       final Map<String, dynamic> params = {
-        'limit': limit ?? '50',
+        'sort_by': sortBy ?? 'name',
+        'sort': sort ?? 'asc',
+        'limit': limit ?? '20',
         'page': page ?? '1',
       };
 
@@ -38,7 +43,158 @@ class CustomerApi {
         return null;
       }
     } catch (e) {
-      print(e.toString());
+      print('CustomerApi.getCustomers error: ${e.toString()}');
+      return null;
+    }
+  }
+
+  /// Get customer detail
+  Future<CustomerDataModel?> getCustomerDetail(String customerId) async {
+    try {
+      final uri = Uri.https(
+        EndpointConfig.domain,
+        '${EndpointConfig.path['customer']}/$customerId',
+      );
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final response = await http.get(uri, headers: {
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+        "Accept": "application/json",
+      });
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        return CustomerDataModel.fromJson(jsonResponse['data']);
+      } else {
+        return null;
+      }
+    } catch (e) {
+      print('CustomerApi.getCustomerDetail error: ${e.toString()}');
+      return null;
+    }
+  }
+
+  /// Create new customer
+  Future<CustomerDataModel?> createCustomer({
+    required String code,
+    required String name,
+    required String phoneNumber,
+    required String address,
+    String? cityName,
+    double? latitude,
+    double? longitude,
+    bool isActive = true,
+  }) async {
+    try {
+      final uri = Uri.https(
+        EndpointConfig.domain,
+        EndpointConfig.path['customer']!,
+      );
+
+      final body = {
+        'code': code,
+        'name': name,
+        'phone_number': phoneNumber,
+        'address': address,
+        if (cityName != null) 'city_name': cityName,
+        if (latitude != null) 'latitude': latitude,
+        if (longitude != null) 'longitude': longitude,
+        'is_active': isActive,
+      };
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final response = await http.post(
+        uri,
+        headers: {
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: json.encode(body),
+      );
+
+      if (response.statusCode == 201) {
+        final jsonResponse = json.decode(response.body);
+        return CustomerDataModel.fromJson(jsonResponse['data']);
+      } else if (response.statusCode == 422) {
+        // Handle validation errors
+        final jsonResponse = json.decode(response.body);
+        final errors = jsonResponse['errors'] as Map<String, dynamic>?;
+        if (errors != null) {
+          final errorMessages =
+              errors.values.expand((e) => (e as List).cast<String>()).toList();
+          print('Validation errors: ${errorMessages.join(', ')}');
+        }
+        return null;
+      } else {
+        print('Error: ${response.statusCode} - ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('CustomerApi.createCustomer error: ${e.toString()}');
+      return null;
+    }
+  }
+
+  /// Update customer
+  Future<CustomerDataModel?> updateCustomer({
+    required String customerId,
+    required String code,
+    required String name,
+    required String phoneNumber,
+    required String address,
+    String? cityName,
+    double? latitude,
+    double? longitude,
+    bool isActive = true,
+  }) async {
+    try {
+      final uri = Uri.https(
+        EndpointConfig.domain,
+        '${EndpointConfig.path['customer']}/$customerId',
+      );
+
+      final body = {
+        'code': code,
+        'name': name,
+        'phone_number': phoneNumber,
+        'address': address,
+        if (cityName != null) 'city_name': cityName,
+        if (latitude != null) 'latitude': latitude,
+        if (longitude != null) 'longitude': longitude,
+        'is_active': isActive,
+      };
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final response = await http.put(
+        uri,
+        headers: {
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+        body: json.encode(body),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        return CustomerDataModel.fromJson(jsonResponse['data']);
+      } else if (response.statusCode == 422) {
+        // Handle validation errors
+        final jsonResponse = json.decode(response.body);
+        final errors = jsonResponse['errors'] as Map<String, dynamic>?;
+        if (errors != null) {
+          final errorMessages =
+              errors.values.expand((e) => (e as List).cast<String>()).toList();
+          print('Validation errors: ${errorMessages.join(', ')}');
+        }
+        return null;
+      } else {
+        print('Error: ${response.statusCode} - ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('CustomerApi.updateCustomer error: ${e.toString()}');
       return null;
     }
   }

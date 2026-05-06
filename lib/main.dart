@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:provider/provider.dart';
 import 'package:medhuro_mobile/provider/sales_provider.dart';
 import 'package:medhuro_mobile/screen/home/home_screen.dart';
@@ -25,8 +26,17 @@ class MyApp extends StatelessWidget {
         title: 'Medhuro Mobile',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+          colorScheme:
+              ColorScheme.fromSeed(seedColor: PalletConfig.primaryColor),
           useMaterial3: true,
+          appBarTheme: const AppBarTheme(
+            iconTheme: IconThemeData(color: Colors.white),
+            titleTextStyle: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: PalletConfig.fontLargeSize,
+            ),
+          ),
         ),
         home: const SplashScreen(),
         routes: {
@@ -79,13 +89,13 @@ class _SplashScreenState extends State<SplashScreen> {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.1),
+                color: PalletConfig.primaryColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(30),
               ),
               child: const Icon(
                 Icons.app_registration,
                 size: 70,
-                color: Colors.blue,
+                color: PalletConfig.primaryColor,
               ),
             ),
             const SizedBox(height: 30),

@@ -14,7 +14,6 @@ class SalesWizardScreen extends StatefulWidget {
 
 class _SalesWizardScreenState extends State<SalesWizardScreen> {
   late PageController _pageController;
-  SalesWizardStep _currentStep = SalesWizardStep.header;
   int _currentStepIndex = 0;
 
   @override
@@ -32,7 +31,6 @@ class _SalesWizardScreenState extends State<SalesWizardScreen> {
   void _goToStep(int index) {
     setState(() {
       _currentStepIndex = index;
-      _currentStep = SalesWizardStep.values[index];
     });
     _pageController.animateToPage(
       index,
@@ -149,7 +147,6 @@ class _SalesWizardScreenState extends State<SalesWizardScreen> {
                 onPageChanged: (index) {
                   setState(() {
                     _currentStepIndex = index;
-                    _currentStep = SalesWizardStep.values[index];
                   });
                 },
                 children: [

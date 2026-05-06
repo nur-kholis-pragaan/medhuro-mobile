@@ -116,7 +116,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             Divider(height: 16),
                             _buildInfoRow(
                               "Prinsip",
-                              product.name ?? "-",
+                              product.name,
                             ),
                             Divider(height: 16),
                             _buildInfoRow("Harga", "Rp. ${product.price}"),

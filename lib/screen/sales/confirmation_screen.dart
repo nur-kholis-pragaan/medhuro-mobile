@@ -23,7 +23,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   CustomerModel? customerModel;
   PaymentTermModel? paymentTermModel;
 
-  int? selectedCustomerId;
+  String? selectedCustomerId;
   int? selectedPaymentTermId;
   late DateTime selectedDate;
   int transactionDiscount = 0;
@@ -235,7 +235,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                   }
 
                   customerModel = snapshot.data;
-                  return DropdownButtonFormField<int>(
+                  return DropdownButtonFormField<String>(
                     value: selectedCustomerId,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(

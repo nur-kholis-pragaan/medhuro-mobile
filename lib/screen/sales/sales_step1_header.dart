@@ -8,7 +8,7 @@ import 'package:medhuro_mobile/widget/form_widget.dart';
 import 'package:provider/provider.dart';
 
 typedef OnHeaderComplete = void Function({
-  required int customerId,
+  required String customerId,
   required DateTime salesDate,
   required int transactionDiscount,
 });
@@ -30,7 +30,7 @@ class _SalesStep1HeaderState extends State<SalesStep1Header> {
 
   CustomerModel? customerModel;
 
-  int? selectedCustomerId;
+  String? selectedCustomerId;
   late DateTime selectedDate;
   int transactionDiscount = 0;
   late TextEditingController transactionDiscountController;
@@ -155,7 +155,7 @@ class _SalesStep1HeaderState extends State<SalesStep1Header> {
                 }
 
                 customerModel = snapshot.data;
-                return DropdownButtonFormField<int>(
+                return DropdownButtonFormField<String>(
                   value: selectedCustomerId,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(

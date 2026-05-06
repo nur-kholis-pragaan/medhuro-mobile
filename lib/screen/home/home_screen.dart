@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:medhuro_mobile/config/pallet_config.dart';
+import 'package:medhuro_mobile/screen/customer/customer_screen.dart';
 import 'package:medhuro_mobile/screen/product/product_screen.dart';
-import 'package:medhuro_mobile/screen/sales/create_sales_screen.dart';
 import 'package:medhuro_mobile/screen/sales/my_sales_screen.dart';
 import 'package:medhuro_mobile/screen/sales/receivables_screen.dart';
-import 'package:medhuro_mobile/screen/sales/sales_step1_header.dart';
 import 'package:medhuro_mobile/screen/sales/sales_wizard_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -143,37 +142,37 @@ class _HomeScreenState extends State<HomeScreen> {
                       _buildMenuCard(
                         icon: Icons.shopping_bag,
                         title: 'Produk',
-                        color: Color(0xFF6366F1),
+                        color: PalletConfig.primaryColor,
                         onTap: () => _navigateTo(ProductScreen()),
                       ),
                       _buildMenuCard(
                         icon: Icons.add_circle_outline,
                         title: 'Buat Penjualan',
-                        color: Color(0xFF10B981),
+                        color: PalletConfig.primaryColor,
                         onTap: () => _navigateTo(SalesWizardScreen()),
                       ),
                       _buildMenuCard(
                         icon: Icons.receipt_long,
                         title: 'Penjualan Saya',
-                        color: Color(0xFF6366F1),
+                        color: PalletConfig.primaryColor,
                         onTap: () => _navigateTo(MySalesScreen()),
                       ),
                       _buildMenuCard(
                         icon: Icons.account_balance_wallet,
                         title: 'Piutang',
-                        color: Color(0xFFF59E0B),
+                        color: PalletConfig.primaryColor,
                         onTap: () => _navigateTo(ReceivablesScreen()),
                       ),
                       _buildMenuCard(
                         icon: Icons.people,
                         title: 'Pelanggan',
-                        color: Color(0xFFEC4899),
-                        onTap: () => _showComingSoon('Pelanggan'),
+                        color: PalletConfig.primaryColor,
+                        onTap: () => _navigateTo(CustomerScreen()),
                       ),
                       _buildMenuCard(
                         icon: Icons.arrow_back,
                         title: 'Retur',
-                        color: Color.fromARGB(255, 72, 116, 236),
+                        color: PalletConfig.primaryColor,
                         onTap: () => _showComingSoon('Retur'),
                       ),
                     ],
@@ -193,7 +192,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: _buildMenuCard(
                       icon: Icons.person,
                       title: 'Profil',
-                      color: Color(0xFF8B5CF6),
+                      color: PalletConfig.primaryColor,
                       onTap: () => _showComingSoon('Profil'),
                       isFullWidth: true,
                     ),

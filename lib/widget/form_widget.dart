@@ -20,7 +20,7 @@ class FormWidget {
     required TextEditingController controller,
     required String label,
     required TextInputType type,
-    required IconData icon,
+    IconData icon = Icons.text_fields,
     bool obscureText = false,
     String? Function(String?)? validator,
   }) {
@@ -44,6 +44,42 @@ class FormWidget {
             color: Colors.blueAccent,
             width: 1.0,
           ),
+        ),
+      ),
+    );
+  }
+
+  /// Text input field dengan lebih banyak opsi (untuk form create/edit)
+  Widget textInput({
+    required TextEditingController controller,
+    required String label,
+    String? hintText,
+    TextInputType keyboardType = TextInputType.text,
+    int maxLines = 1,
+    bool obscureText = false,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      obscureText: obscureText,
+      maxLines: maxLines,
+      validator: validator ??
+          (value) {
+            if (value == null || value.isEmpty) {
+              return '$label tidak boleh kosong';
+            }
+            return null;
+          },
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
         ),
       ),
     );

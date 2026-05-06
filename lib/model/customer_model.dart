@@ -22,17 +22,17 @@ class CustomerModel {
 }
 
 class CustomerDataModel {
-  int id;
+  String id;
   String code;
   String name;
   String phoneNumber;
   String address;
-  String cityName;
-  String latitude;
-  String longitude;
+  String? cityName;
+  double? latitude;
+  double? longitude;
   int isActive;
-  String created_at;
-  String updated_at;
+  String createdAt;
+  String updatedAt;
 
   CustomerDataModel({
     required this.id,
@@ -40,27 +40,60 @@ class CustomerDataModel {
     required this.name,
     required this.phoneNumber,
     required this.address,
-    required this.cityName,
-    required this.latitude,
-    required this.longitude,
+    this.cityName,
+    this.latitude,
+    this.longitude,
     required this.isActive,
-    required this.created_at,
-    required this.updated_at,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   factory CustomerDataModel.fromJson(Map<String, dynamic> json) {
+    // Handle id as int or String from API
+    String customerId = '';
+    if (json['id'] != null) {
+      customerId = json['id'].toString();
+    }
+
+    // Handle is_active as bool or int
+    int isActive = 1;
+    if (json['is_active'] != null) {
+      if (json['is_active'] is bool) {
+        isActive = json['is_active'] ? 1 : 0;
+      } else if (json['is_active'] is int) {
+        isActive = json['is_active'];
+      }
+    }
+
     return CustomerDataModel(
-      id: json['id'] ?? 0,
+      id: customerId,
       code: json['code'] ?? '',
       name: json['name'] ?? '',
       phoneNumber: json['phone_number'] ?? '',
       address: json['address'] ?? '',
-      cityName: json['city_name'] ?? '',
-      latitude: json['latitude'] ?? '',
-      longitude: json['longitude'] ?? '',
-      isActive: json['is_active'] ?? 0,
-      created_at: json['created_at'] ?? '',
-      updated_at: json['updated_at'] ?? '',
+      cityName: json['city_name'],
+      latitude: json['latitude'] != null
+          ? double.tryParse(json['latitude'].toString())
+          : null,
+      longitude: json['longitude'] != null
+          ? double.tryParse(json['longitude'].toString())
+          : null,
+      isActive: isActive,
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'code': code,
+      'name': name,
+      'phone_number': phoneNumber,
+      'address': address,
+      'city_name': cityName,
+      'latitude': latitude,
+      'longitude': longitude,
+      'is_active': isActive,
+    };
   }
 }
