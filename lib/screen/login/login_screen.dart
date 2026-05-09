@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '/api/auth_api.dart';
 import '/widget/form_widget.dart';
@@ -167,6 +168,7 @@ class _LoginScreenState extends State<LoginScreen> {
               label: 'Login',
               callBack: login,
               showLoader: loginLoader,
+              backgroundColor: PalletConfig.primaryColor,
             ),
             const SizedBox(height: 20),
           ],

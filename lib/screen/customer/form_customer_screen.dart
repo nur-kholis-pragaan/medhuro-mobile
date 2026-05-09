@@ -172,23 +172,19 @@ class _FormCustomerScreenState extends State<FormCustomerScreen> {
           ),
         );
         Navigator.pop(context);
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              isEditMode
-                  ? 'Gagal update customer. Periksa kembali data Anda.'
-                  : 'Gagal tambah customer. Periksa kembali data Anda.',
-            ),
-            backgroundColor: PalletConfig.errorColor,
-          ),
-        );
       }
     } catch (e) {
+      String errorMessage = e.toString();
+      // Extract error message from Exception
+      if (errorMessage.startsWith('Exception: ')) {
+        errorMessage = errorMessage.replaceFirst('Exception: ', '');
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: ${e.toString()}'),
+          content: Text(errorMessage),
           backgroundColor: PalletConfig.errorColor,
+          duration: const Duration(seconds: 4),
         ),
       );
     } finally {

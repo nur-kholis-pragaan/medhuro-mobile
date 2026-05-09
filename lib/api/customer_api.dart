@@ -112,27 +112,28 @@ class CustomerApi {
         },
         body: json.encode(body),
       );
-
+      final jsonResponse = json.decode(response.body);
+      print(jsonResponse);
       if (response.statusCode == 201) {
-        final jsonResponse = json.decode(response.body);
         return CustomerDataModel.fromJson(jsonResponse['data']);
       } else if (response.statusCode == 422) {
         // Handle validation errors
-        final jsonResponse = json.decode(response.body);
         final errors = jsonResponse['errors'] as Map<String, dynamic>?;
         if (errors != null) {
           final errorMessages =
               errors.values.expand((e) => (e as List).cast<String>()).toList();
-          print('Validation errors: ${errorMessages.join(', ')}');
+          throw Exception(errorMessages.join('\n'));
         }
-        return null;
+        throw Exception(jsonResponse['message'] ?? 'Validation error');
       } else {
         print('Error: ${response.statusCode} - ${response.body}');
-        return null;
+        throw Exception(jsonResponse['message'] ?? 'Gagal tambah customer');
       }
+    } on Exception {
+      rethrow;
     } catch (e) {
       print('CustomerApi.createCustomer error: ${e.toString()}');
-      return null;
+      rethrow;
     }
   }
 
@@ -176,26 +177,27 @@ class CustomerApi {
         body: json.encode(body),
       );
 
+      final jsonResponse = json.decode(response.body);
       if (response.statusCode == 200) {
-        final jsonResponse = json.decode(response.body);
         return CustomerDataModel.fromJson(jsonResponse['data']);
       } else if (response.statusCode == 422) {
         // Handle validation errors
-        final jsonResponse = json.decode(response.body);
         final errors = jsonResponse['errors'] as Map<String, dynamic>?;
         if (errors != null) {
           final errorMessages =
               errors.values.expand((e) => (e as List).cast<String>()).toList();
-          print('Validation errors: ${errorMessages.join(', ')}');
+          throw Exception(errorMessages.join('\n'));
         }
-        return null;
+        throw Exception(jsonResponse['message'] ?? 'Validation error');
       } else {
         print('Error: ${response.statusCode} - ${response.body}');
-        return null;
+        throw Exception(jsonResponse['message'] ?? 'Gagal update customer');
       }
+    } on Exception {
+      rethrow;
     } catch (e) {
       print('CustomerApi.updateCustomer error: ${e.toString()}');
-      return null;
+      rethrow;
     }
   }
 }
