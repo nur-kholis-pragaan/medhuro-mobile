@@ -177,16 +177,16 @@ class _ProductScreenState extends State<ProductScreen> {
                                     style: TextStyle(fontSize: 12),
                                   ),
                                   Text(
-                                    "Brand: ${productModel.data[i].name}",
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                  Text(
-                                    "Stok: ${productModel.data[i].stock}",
+                                    "Stok Carton: ${productModel.data[i].inventory.qtyCarton}",
                                     style: TextStyle(
                                       fontSize: 12,
                                       color: PalletConfig.secondaryColor,
                                       fontWeight: FontWeight.w600,
                                     ),
+                                  ),
+                                  Text(
+                                    "Stok Pack: ${productModel.data[i].inventory.qtyPack}, Pcs: ${productModel.data[i].inventory.qtyPcs}",
+                                    style: TextStyle(fontSize: 12),
                                   ),
                                 ],
                               ),

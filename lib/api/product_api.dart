@@ -61,6 +61,7 @@ class ProductApi {
       });
 
       if (response.statusCode == 200) {
+        print('ProductApi.getProductDetail response: ${response.body}');
         final jsonResponse = json.decode(response.body);
         return ProductDataModel.fromJson(jsonResponse['data']);
       } else {

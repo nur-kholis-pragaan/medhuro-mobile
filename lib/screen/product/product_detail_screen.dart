@@ -56,23 +56,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      width: double.infinity,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: PalletConfig.shadeSecondary,
-                        borderRadius:
-                            BorderRadius.circular(PalletConfig.borderRadius),
-                      ),
-                      child: Center(
-                        child: Icon(
-                          Icons.shopping_bag,
-                          size: 80,
-                          color: PalletConfig.primaryColor,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: PalletConfig.padding),
                     Text(
                       product.name,
                       style: TextStyle(
@@ -112,30 +95,51 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                             Divider(height: 16),
                             _buildInfoRow("Kode", product.code),
                             Divider(height: 16),
-                            _buildInfoRow("Brand", product.name),
-                            Divider(height: 16),
                             _buildInfoRow(
-                              "Prinsip",
-                              product.name,
+                              "Stok Carton",
+                              "${product.inventory.qtyCarton}",
                             ),
                             Divider(height: 16),
-                            _buildInfoRow("Harga", "Rp. ${product.price}"),
+                            _buildInfoRow(
+                              "Stok Pack",
+                              "${product.inventory.qtyPack}",
+                            ),
                             Divider(height: 16),
                             _buildInfoRow(
-                              "Stok",
-                              "${product.stock}",
+                              "Stok Pcs",
+                              "${product.inventory.qtyPcs}",
                               valueColor: PalletConfig.successColor,
+                            ),
+                            Divider(height: 16),
+                            _buildInfoRow("Harga Jual Carton",
+                                "Rp. ${product.sellingPriceCarton}"),
+                            Divider(height: 16),
+                            _buildInfoRow("Harga Jual Pack",
+                                "Rp. ${product.sellingPricePack}"),
+                            Divider(height: 16),
+                            _buildInfoRow("Harga Jual Pcs",
+                                "Rp. ${product.sellingPricePcs}"),
+                            Divider(height: 16),
+                            _buildInfoRow("Rata-rata Harga Pcs",
+                                "Rp. ${product.avgCostPcs}"),
+                            Divider(height: 16),
+                            _buildInfoRow(
+                              "Status",
+                              product.isActive == 1 ? "Aktif" : "Tidak Aktif",
+                              valueColor: product.isActive == 1
+                                  ? PalletConfig.successColor
+                                  : Colors.red,
                             ),
                             Divider(height: 16),
                             _buildInfoRow(
                               "Dibuat",
-                              product.created_at,
+                              product.createdAt,
                               fontSize: 12,
                             ),
                             Divider(height: 16),
                             _buildInfoRow(
                               "Diperbarui",
-                              product.updated_at,
+                              product.updatedAt,
                               fontSize: 12,
                             ),
                           ],

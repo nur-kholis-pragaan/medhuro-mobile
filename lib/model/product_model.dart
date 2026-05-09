@@ -21,33 +21,88 @@ class ProductModel {
   }
 }
 
+class InventoryModel {
+  int id;
+  int productId;
+  int qtyCarton;
+  int qtyPack;
+  int qtyPcs;
+  String createdAt;
+  String updatedAt;
+
+  InventoryModel({
+    required this.id,
+    required this.productId,
+    required this.qtyCarton,
+    required this.qtyPack,
+    required this.qtyPcs,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory InventoryModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return InventoryModel(
+        id: 0,
+        productId: 0,
+        qtyCarton: 0,
+        qtyPack: 0,
+        qtyPcs: 0,
+        createdAt: '',
+        updatedAt: '',
+      );
+    }
+    return InventoryModel(
+      id: json['id'] ?? 0,
+      productId: json['product_id'] ?? 0,
+      qtyCarton: json['qty_carton'] ?? 0,
+      qtyPack: json['qty_pack'] ?? 0,
+      qtyPcs: json['qty_pcs'] ?? 0,
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
+    );
+  }
+}
+
 class ProductDataModel {
   int id;
   String name;
   String code;
-  BrandModel? brand;
-  PrincipleModel? principle;
-  int price;
-  int stock;
+  int brandId;
+  int principleId;
+  int packPerCarton;
+  int pcsPerPack;
+  int costPriceCarton;
+  int costPricePack;
+  int costPricePcs;
   int sellingPriceCarton;
   int sellingPricePack;
   int sellingPricePcs;
-  String created_at;
-  String updated_at;
+  int avgCostPcs;
+  int isActive;
+  InventoryModel inventory;
+  String createdAt;
+  String updatedAt;
 
   ProductDataModel({
     required this.id,
     required this.name,
     required this.code,
-    this.brand,
-    this.principle,
-    required this.price,
-    required this.stock,
+    required this.brandId,
+    required this.principleId,
+    required this.packPerCarton,
+    required this.pcsPerPack,
+    required this.costPriceCarton,
+    required this.costPricePack,
+    required this.costPricePcs,
     required this.sellingPriceCarton,
     required this.sellingPricePack,
     required this.sellingPricePcs,
-    required this.created_at,
-    required this.updated_at,
+    required this.avgCostPcs,
+    required this.isActive,
+    required this.inventory,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   factory ProductDataModel.fromJson(Map<String, dynamic> json) {
@@ -55,17 +110,21 @@ class ProductDataModel {
       id: json['id'] ?? 0,
       name: json['name'] ?? '',
       code: json['code'] ?? '',
-      brand: json['brand'] != null ? BrandModel.fromJson(json['brand']) : null,
-      principle: json['principle'] != null
-          ? PrincipleModel.fromJson(json['principle'])
-          : null,
-      price: json['price'] ?? 0,
-      stock: json['stock'] ?? 0,
+      brandId: json['brand_id'] ?? 0,
+      principleId: json['principle_id'] ?? 0,
+      packPerCarton: json['pack_per_carton'] ?? 0,
+      pcsPerPack: json['pcs_per_pack'] ?? 0,
+      costPriceCarton: _parsePrice(json['cost_price_carton']),
+      costPricePack: _parsePrice(json['cost_price_pack']),
+      costPricePcs: _parsePrice(json['cost_price_pcs']),
       sellingPriceCarton: _parsePrice(json['selling_price_carton']),
       sellingPricePack: _parsePrice(json['selling_price_pack']),
       sellingPricePcs: _parsePrice(json['selling_price_pcs']),
-      created_at: json['created_at'] ?? '',
-      updated_at: json['updated_at'] ?? '',
+      avgCostPcs: _parsePrice(json['avg_cost_pcs']),
+      isActive: json['is_active'] ?? 0,
+      inventory: InventoryModel.fromJson(json['inventory'] ?? {}),
+      createdAt: json['created_at'] ?? '',
+      updatedAt: json['updated_at'] ?? '',
     );
   }
 }
@@ -75,38 +134,4 @@ int _parsePrice(dynamic value) {
   if (value is double) return value.toInt();
   if (value is String) return int.tryParse(value) ?? 0;
   return 0;
-}
-
-class BrandModel {
-  int id;
-  String name;
-
-  BrandModel({
-    required this.id,
-    required this.name,
-  });
-
-  factory BrandModel.fromJson(Map<String, dynamic> json) {
-    return BrandModel(
-      id: json['id'] ?? 0,
-      name: json['name'] ?? '',
-    );
-  }
-}
-
-class PrincipleModel {
-  int? id;
-  String? name;
-
-  PrincipleModel({
-    required this.id,
-    required this.name,
-  });
-
-  factory PrincipleModel.fromJson(Map<String, dynamic> json) {
-    return PrincipleModel(
-      id: json['id'],
-      name: json['name'],
-    );
-  }
 }
