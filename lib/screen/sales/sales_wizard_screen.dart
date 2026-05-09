@@ -104,35 +104,39 @@ class _SalesWizardScreenState extends State<SalesWizardScreen> {
                   bool isActive = index <= _currentStepIndex;
                   bool isCurrent = index == _currentStepIndex;
 
-                  return Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 20,
-                        backgroundColor: isActive
-                            ? PalletConfig.primaryColor
-                            : Colors.grey.shade300,
-                        child: Text(
-                          '${index + 1}',
-                          style: TextStyle(
-                            color:
-                                isActive ? Colors.white : Colors.grey.shade600,
-                            fontWeight: FontWeight.bold,
+                  return GestureDetector(
+                    onTap: isActive ? () => _goToStep(index) : null,
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundColor: isActive
+                              ? PalletConfig.primaryColor
+                              : Colors.grey.shade300,
+                          child: Text(
+                            '${index + 1}',
+                            style: TextStyle(
+                              color: isActive
+                                  ? Colors.white
+                                  : Colors.grey.shade600,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        ['Info', 'Item', 'Retur', 'Bayar'][index],
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight:
-                              isCurrent ? FontWeight.bold : FontWeight.normal,
-                          color: isCurrent
-                              ? PalletConfig.primaryColor
-                              : Colors.grey,
+                        const SizedBox(height: 4),
+                        Text(
+                          ['Info', 'Item', 'Retur', 'Bayar'][index],
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight:
+                                isCurrent ? FontWeight.bold : FontWeight.normal,
+                            color: isCurrent
+                                ? PalletConfig.primaryColor
+                                : Colors.grey,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   );
                 }),
               ),

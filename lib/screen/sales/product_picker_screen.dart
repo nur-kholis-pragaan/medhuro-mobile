@@ -96,6 +96,9 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
           unit: 'carton',
           qty: qty,
           price: product.sellingPriceCarton,
+          sellingPriceCarton: product.sellingPriceCarton,
+          sellingPricePack: product.sellingPricePack,
+          sellingPricePcs: product.sellingPricePcs,
         );
       } else {
         salesProvider.addItem(
@@ -105,6 +108,9 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
           unit: 'carton',
           qty: qty,
           price: product.sellingPriceCarton,
+          sellingPriceCarton: product.sellingPriceCarton,
+          sellingPricePack: product.sellingPricePack,
+          sellingPricePcs: product.sellingPricePcs,
         );
       }
 

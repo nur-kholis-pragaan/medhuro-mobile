@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:medhuro_mobile/provider/sales_provider.dart';
 import 'package:medhuro_mobile/screen/sales/product_picker_screen.dart';
@@ -262,28 +264,68 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                   ],
                                 ),
                                 const SizedBox(height: 12),
-                                // Unit Selector
-                                Text(
-                                  'Unit:',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey.shade700,
-                                  ),
-                                ),
-                                const SizedBox(height: 6),
-                                FormWidget().unitSelector(
-                                  value: unitSelectors[index] ?? 'carton',
-                                  onChanged: (newUnit) {
-                                    setState(() {
-                                      unitSelectors[index] = newUnit;
-                                    });
-                                  },
-                                ),
-                                const SizedBox(height: 12),
-                                // Qty Control
+                                // Unit & Qty Control (One Row)
                                 Row(
                                   children: [
+                                    SizedBox(
+                                      width: 200,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Unit:',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.grey.shade700,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          SizedBox(
+                                            height: 36,
+                                            child: FormWidget().unitSelector(
+                                              value: unitSelectors[index] ??
+                                                  'carton',
+                                              onChanged: (newUnit) {
+                                                setState(() {
+                                                  unitSelectors[index] =
+                                                      newUnit;
+                                                });
+
+                                                // Update price based on selected unit
+                                                int newPrice = 0;
+                                                if (newUnit == 'carton') {
+                                                  newPrice =
+                                                      item.sellingPriceCarton;
+                                                } else if (newUnit == 'pack') {
+                                                  newPrice =
+                                                      item.sellingPricePack;
+                                                } else if (newUnit == 'pcs') {
+                                                  newPrice =
+                                                      item.sellingPricePcs;
+                                                }
+
+                                                if (newPrice > 0) {
+                                                  _getPriceController(index,
+                                                              salesProvider)
+                                                          .text =
+                                                      FormatterUtil.formatPrice(
+                                                          newPrice);
+                                                  salesProvider.updateItemPrice(
+                                                      index, newPrice);
+                                                }
+
+                                                // Update unit in provider
+                                                salesProvider.updateItemUnit(
+                                                    index, newUnit, newPrice);
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
@@ -292,24 +334,36 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                           Text(
                                             'Qty:',
                                             style: TextStyle(
-                                              fontSize: 12,
+                                              fontSize: 11,
                                               fontWeight: FontWeight.w600,
                                               color: Colors.grey.shade700,
                                             ),
                                           ),
-                                          const SizedBox(height: 6),
-                                          FormWidget().qtyControl(
-                                            value: int.tryParse(
-                                                    _getQtyController(index,
-                                                            salesProvider)
-                                                        .text) ??
-                                                1,
-                                            onChanged: (newQty) {
-                                              _getQtyController(
-                                                      index, salesProvider)
-                                                  .text = newQty.toString();
-                                              setState(() {});
-                                            },
+                                          const SizedBox(height: 4),
+                                          SizedBox(
+                                            height: 36,
+                                            child: FormWidget().qtyControl(
+                                              value: int.tryParse(
+                                                      _getQtyController(index,
+                                                              salesProvider)
+                                                          .text) ??
+                                                  1,
+                                              onChanged: (newQty) {
+                                                _getQtyController(
+                                                        index, salesProvider)
+                                                    .text = newQty.toString();
+                                                // Update provider immediately for subtotal recalculation
+                                                int discount = int.tryParse(
+                                                        _getDiscountController(
+                                                                index,
+                                                                salesProvider)
+                                                            .text) ??
+                                                    0;
+                                                salesProvider.updateItem(
+                                                    index, newQty, discount);
+                                                setState(() {});
+                                              },
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -320,8 +374,8 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                 // Price & Discount
                                 Row(
                                   children: [
-                                    Expanded(
-                                      flex: 2,
+                                    SizedBox(
+                                      width: 200,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -346,7 +400,7 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(width: 12),
+                                    const SizedBox(width: 8),
                                     Expanded(
                                       child: Column(
                                         crossAxisAlignment:
@@ -366,6 +420,14 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                                 index, salesProvider),
                                             label: '0',
                                             onChanged: (value) {
+                                              // Update provider immediately for subtotal recalculation
+                                              int qty = int.tryParse(
+                                                      _getQtyController(index,
+                                                              salesProvider)
+                                                          .text) ??
+                                                  1;
+                                              salesProvider.updateItem(
+                                                  index, qty, value);
                                               setState(() {});
                                             },
                                           ),

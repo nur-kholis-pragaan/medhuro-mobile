@@ -9,6 +9,9 @@ class SalesItem {
   int qty;
   int price; // harga per unit
   int discountAmount;
+  int sellingPriceCarton;
+  int sellingPricePack;
+  int sellingPricePcs;
 
   SalesItem({
     required this.productId,
@@ -18,6 +21,9 @@ class SalesItem {
     required this.qty,
     required this.price,
     required this.discountAmount,
+    this.sellingPriceCarton = 0,
+    this.sellingPricePack = 0,
+    this.sellingPricePcs = 0,
   });
 
   int get subtotal {
@@ -44,6 +50,9 @@ class ReturnItem {
   int qty;
   int price; // harga per unit
   int discountAmount;
+  int sellingPriceCarton;
+  int sellingPricePack;
+  int sellingPricePcs;
 
   ReturnItem({
     required this.productId,
@@ -53,6 +62,9 @@ class ReturnItem {
     required this.qty,
     required this.price,
     required this.discountAmount,
+    this.sellingPriceCarton = 0,
+    this.sellingPricePack = 0,
+    this.sellingPricePcs = 0,
   });
 
   int get subtotal {
@@ -142,6 +154,9 @@ class SalesProvider with ChangeNotifier {
     required int qty,
     required int price,
     int discountAmount = 0,
+    int sellingPriceCarton = 0,
+    int sellingPricePack = 0,
+    int sellingPricePcs = 0,
   }) {
     // Check if same product with same unit already exists
     final existingIndex = _items.indexWhere(
@@ -162,6 +177,9 @@ class SalesProvider with ChangeNotifier {
           qty: qty,
           price: price,
           discountAmount: discountAmount,
+          sellingPriceCarton: sellingPriceCarton,
+          sellingPricePack: sellingPricePack,
+          sellingPricePcs: sellingPricePcs,
         ),
       );
     }
@@ -211,6 +229,9 @@ class SalesProvider with ChangeNotifier {
     required int qty,
     required int price,
     int discountAmount = 0,
+    int sellingPriceCarton = 0,
+    int sellingPricePack = 0,
+    int sellingPricePcs = 0,
   }) {
     // Check if same product with same unit already exists
     final existingIndex = _returnItems.indexWhere(
@@ -231,6 +252,9 @@ class SalesProvider with ChangeNotifier {
           qty: qty,
           price: price,
           discountAmount: discountAmount,
+          sellingPriceCarton: sellingPriceCarton,
+          sellingPricePack: sellingPricePack,
+          sellingPricePcs: sellingPricePcs,
         ),
       );
     }

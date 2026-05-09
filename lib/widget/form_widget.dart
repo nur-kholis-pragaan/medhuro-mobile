@@ -192,6 +192,8 @@ class FormWidget {
     Color? color,
     String? tooltip,
     double size = 24,
+    double minWidth = 40,
+    double minHeight = 40,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -206,8 +208,8 @@ class FormWidget {
         onPressed: onPressed,
         color: color,
         tooltip: tooltip,
-        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-        padding: const EdgeInsets.all(8),
+        constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
+        padding: const EdgeInsets.all(2),
       ),
     );
   }
@@ -257,20 +259,36 @@ class FormWidget {
     required ValueChanged<String> onChanged,
     List<String> units = const ['carton', 'pack', 'pcs'],
   }) {
+    final Map<String, String> unitLabels = {
+      'carton': 'CTN',
+      'pack': 'PCK',
+      'pcs': 'PCS',
+    };
+
     return Wrap(
-      spacing: 8,
+      spacing: 6,
       children: units.map((unit) {
         bool isSelected = value == unit;
-        return FilterChip(
-          label: Text(unit.toUpperCase()),
-          selected: isSelected,
-          onSelected: (selected) {
-            if (selected) onChanged(unit);
-          },
-          backgroundColor: Colors.grey.shade100,
-          selectedColor: Colors.blue.shade100,
-          side: BorderSide(
-            color: isSelected ? Colors.blue : Colors.grey.shade300,
+        return GestureDetector(
+          onTap: () => onChanged(unit),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            decoration: BoxDecoration(
+              color: isSelected ? Colors.blue : Colors.white,
+              border: Border.all(
+                color: isSelected ? Colors.blue : Colors.grey.shade300,
+                width: 1.2,
+              ),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Text(
+              unitLabels[unit] ?? unit.toUpperCase(),
+              style: TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: isSelected ? Colors.white : Colors.grey.shade700,
+              ),
+            ),
           ),
         );
       }).toList(),
@@ -299,7 +317,7 @@ class FormWidget {
         ),
         const SizedBox(width: 12),
         SizedBox(
-          width: 40,
+          width: 15,
           child: Text(
             value.toString(),
             textAlign: TextAlign.center,
