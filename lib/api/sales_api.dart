@@ -22,7 +22,7 @@ class SalesApi {
       );
 
       final body = {
-        'customer_id': customerId,
+        'customer_id': int.parse(customerId),
         'payment_term_id': paymentTermId,
         'sales_date': salesDate,
         'discount_amount': discountAmount,
@@ -79,7 +79,8 @@ class SalesApi {
         'Authorization': 'Bearer ${prefs.getString("token")}',
         "Accept": "application/json",
       });
-
+      print(uri.toString());
+      print('getMySales response: ${response.statusCode} - ${response.body}');
       if (response.statusCode == 200) {
         return SalesModel.fromJson(json.decode(response.body));
       } else {
@@ -95,7 +96,7 @@ class SalesApi {
     try {
       final uri = Uri.https(
         EndpointConfig.domain,
-        '${EndpointConfig.path['my_sales']}/$id',
+        '${EndpointConfig.path['sales']}/$id',
       );
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -108,6 +109,7 @@ class SalesApi {
         final jsonResponse = json.decode(response.body);
         return SalesDataModel.fromJson(jsonResponse['data']);
       } else {
+        print('Error: ${response.statusCode} - ${response.body}');
         return null;
       }
     } catch (e) {

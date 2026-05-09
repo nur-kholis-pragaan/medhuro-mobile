@@ -271,7 +271,7 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
                                 ),
                               ],
                             ),
-                            if (int.parse(item.discountAmount) > 0) ...[
+                            if (double.parse(item.discountAmount) > 0) ...[
                               SizedBox(height: 4),
                               Row(
                                 mainAxisAlignment:
