@@ -7,12 +7,12 @@ import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:medhuro_mobile/util/formatter_util.dart';
 import 'package:medhuro_mobile/screen/sales/receivable_detail_screen.dart';
 
-class ReceivablesScreen extends StatefulWidget {
+class ReceivableScreen extends StatefulWidget {
   @override
-  _ReceivablesScreenState createState() => _ReceivablesScreenState();
+  _ReceivableScreenState createState() => _ReceivableScreenState();
 }
 
-class _ReceivablesScreenState extends State<ReceivablesScreen> {
+class _ReceivableScreenState extends State<ReceivableScreen> {
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   ScrollController scrollController = ScrollController();
 
