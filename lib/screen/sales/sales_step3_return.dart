@@ -227,7 +227,7 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       SizedBox(
-                                        width: 200,
+                                        width: 180,
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -273,7 +273,7 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
                                   Row(
                                     children: [
                                       SizedBox(
-                                        width: 200,
+                                        width: 180,
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,

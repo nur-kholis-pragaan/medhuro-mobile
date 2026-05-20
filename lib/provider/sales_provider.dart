@@ -50,6 +50,7 @@ class ReturnItem {
   int qty;
   int price; // harga per unit
   int discountAmount;
+  String type; // gs (good stock) atau bs (bad stock)
   int sellingPriceCarton;
   int sellingPricePack;
   int sellingPricePcs;
@@ -62,6 +63,7 @@ class ReturnItem {
     required this.qty,
     required this.price,
     required this.discountAmount,
+    this.type = 'gs',
     this.sellingPriceCarton = 0,
     this.sellingPricePack = 0,
     this.sellingPricePcs = 0,
@@ -229,6 +231,7 @@ class SalesProvider with ChangeNotifier {
     required int qty,
     required int price,
     int discountAmount = 0,
+    String type = 'gs',
     int sellingPriceCarton = 0,
     int sellingPricePack = 0,
     int sellingPricePcs = 0,
@@ -252,6 +255,7 @@ class SalesProvider with ChangeNotifier {
           qty: qty,
           price: price,
           discountAmount: discountAmount,
+          type: type,
           sellingPriceCarton: sellingPriceCarton,
           sellingPricePack: sellingPricePack,
           sellingPricePcs: sellingPricePcs,
@@ -283,6 +287,14 @@ class SalesProvider with ChangeNotifier {
     if (index >= 0 && index < _returnItems.length) {
       _returnItems[index].unit = newUnit;
       _returnItems[index].price = defaultPrice;
+      notifyListeners();
+    }
+  }
+
+  /// Update type return item (gs atau bs)
+  void updateReturnItemType(int index, String type) {
+    if (index >= 0 && index < _returnItems.length) {
+      _returnItems[index].type = type;
       notifyListeners();
     }
   }

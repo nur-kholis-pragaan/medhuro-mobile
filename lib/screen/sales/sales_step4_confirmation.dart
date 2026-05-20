@@ -26,6 +26,7 @@ class _SalesStep4ConfirmationState extends State<SalesStep4Confirmation> {
   late Future<PaymentTermModel?> paymentTermsFuture;
   PaymentTermModel? paymentTermModel;
   int? selectedPaymentTermId;
+  String? selectedPaymentTermType;
   bool isLoading = false;
 
   @override
@@ -198,7 +199,11 @@ class _SalesStep4ConfirmationState extends State<SalesStep4Confirmation> {
               .replaceAll('Rp. ', '');
           cashAmount = int.tryParse(cleanedText) ?? 0;
         }
-        int remainingAmount = salesProvider.totalSales - cashAmount;
+        // Calculate final total: total sales - total return - transaction discount
+        int finalTotal = salesProvider.totalSales -
+            salesProvider.totalReturn -
+            salesProvider.transactionDiscount;
+        int remainingAmount = finalTotal - cashAmount;
 
         return SingleChildScrollView(
           child: Padding(
@@ -276,13 +281,42 @@ class _SalesStep4ConfirmationState extends State<SalesStep4Confirmation> {
                           .map((term) => DropdownMenuItem(
                                 value: term.id,
                                 child: Text(
-                                  '${term.name}${term.dueDays > 0 ? ' (${term.dueDays} hari)' : ''}',
+                                  '${term.name}${' (${term.type})'}',
                                 ),
                               ))
                           .toList(),
                       onChanged: (value) {
                         setState(() {
                           selectedPaymentTermId = value;
+                          // Find the selected payment term to get its type
+                          if (value != null && paymentTermModel != null) {
+                            final selectedTerm = paymentTermModel!.data
+                                .firstWhere((term) => term.id == value,
+                                    orElse: () => paymentTermModel!.data.first);
+                            selectedPaymentTermType = selectedTerm.type;
+
+                            // If cash type, auto-fill the cash amount and make it read-only
+                            if (selectedTerm.type == 'cash') {
+                              // Calculate final total
+                              int finalTotal = Provider.of<SalesProvider>(
+                                          context,
+                                          listen: false)
+                                      .totalSales -
+                                  Provider.of<SalesProvider>(context,
+                                          listen: false)
+                                      .totalReturn -
+                                  Provider.of<SalesProvider>(context,
+                                          listen: false)
+                                      .transactionDiscount;
+                              // Format and set the value
+                              String formatted =
+                                  CurrencyFormatter.formatCurrency(finalTotal);
+                              cashAmountController.text = formatted;
+                            } else {
+                              // Clear the field for credit terms
+                              cashAmountController.clear();
+                            }
+                          }
                         });
                       },
                     );
@@ -480,9 +514,7 @@ class _SalesStep4ConfirmationState extends State<SalesStep4Confirmation> {
                             ),
                           ),
                           Text(
-                            FormatterUtil.formatPriceWithCurrency(
-                                salesProvider.totalSales -
-                                    salesProvider.transactionDiscount),
+                            FormatterUtil.formatPriceWithCurrency(finalTotal),
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
@@ -505,13 +537,33 @@ class _SalesStep4ConfirmationState extends State<SalesStep4Confirmation> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                FormWidget().currencyInput(
-                  controller: cashAmountController,
-                  label: 'Jumlah Uang',
-                  onChanged: (value) {
-                    setState(() {});
-                  },
-                ),
+                if (selectedPaymentTermType == 'cash')
+                  TextField(
+                    controller: cashAmountController,
+                    readOnly: true,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: 'Jumlah Uang',
+                      filled: true,
+                      fillColor: Colors.grey[300], // background abu-abu
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
+                      hintText: 'Otomatis terisi sesuai total',
+                    ),
+                  )
+                else
+                  FormWidget().currencyInput(
+                    controller: cashAmountController,
+                    label: 'Jumlah Uang',
+                    onChanged: (value) {
+                      setState(() {});
+                    },
+                  ),
                 const SizedBox(height: 24),
 
                 // Remaining Amount
