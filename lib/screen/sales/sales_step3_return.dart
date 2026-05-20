@@ -30,6 +30,7 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
   late Map<int, TextEditingController> discountControllers;
   late Map<int, TextEditingController> priceControllers;
   late Map<int, String> unitSelectors;
+  late Map<int, String> typeSelectors;
 
   @override
   void initState() {
@@ -43,6 +44,7 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
     discountControllers = {};
     priceControllers = {};
     unitSelectors = {};
+    typeSelectors = {};
 
     for (int i = 0; i < salesProvider.returnItems.length; i++) {
       final item = salesProvider.returnItems[i];
@@ -53,6 +55,7 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
         text: FormatterUtil.formatPrice(item.price),
       );
       unitSelectors[i] = item.unit;
+      typeSelectors[i] = item.type;
     }
   }
 
@@ -143,6 +146,10 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
       salesProvider.updateReturnItem(i, qty, discount);
       if (price > 0) {
         salesProvider.updateReturnItemPrice(i, price);
+      }
+      // Update type if selected
+      if (typeSelectors.containsKey(i)) {
+        salesProvider.updateReturnItemType(i, typeSelectors[i]!);
       }
     }
 
@@ -260,6 +267,7 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
                                             discountControllers.remove(index);
                                             priceControllers.remove(index);
                                             unitSelectors.remove(index);
+                                            typeSelectors.remove(index);
                                           });
                                         },
                                         icon: const Icon(Icons.delete_outline,
@@ -447,6 +455,54 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
                                             ),
                                           ],
                                         ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 12),
+                                  // Return Type Selector
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Tipe Retur:',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey.shade700,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 6),
+                                      DropdownButtonFormField<String>(
+                                        value: typeSelectors[index] ?? 'gs',
+                                        decoration: InputDecoration(
+                                          border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 8,
+                                          ),
+                                        ),
+                                        items: const [
+                                          DropdownMenuItem(
+                                            value: 'gs',
+                                            child: Text('Good Stock (GS)'),
+                                          ),
+                                          DropdownMenuItem(
+                                            value: 'bs',
+                                            child: Text('Bad Stock (BS)'),
+                                          ),
+                                        ],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            if (value != null) {
+                                              typeSelectors[index] = value;
+                                            }
+                                          });
+                                        },
                                       ),
                                     ],
                                   ),

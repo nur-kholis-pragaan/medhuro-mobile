@@ -80,6 +80,7 @@ class ReturnItem {
       'qty': qty,
       'price': price,
       'discount_amount': discountAmount,
+      'type': type,
     };
   }
 }

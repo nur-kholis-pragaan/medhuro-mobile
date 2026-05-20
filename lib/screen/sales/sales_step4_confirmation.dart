@@ -109,6 +109,7 @@ class _SalesStep4ConfirmationState extends State<SalesStep4Confirmation> {
                     'qty': item.qty,
                     'price': item.price,
                     'discount_amount': item.discountAmount,
+                    'type': item.type,
                   })
               .toList()
           : null;
@@ -428,6 +429,41 @@ class _SalesStep4ConfirmationState extends State<SalesStep4Confirmation> {
                                   style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     color: Color(0xFFFF9800),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: item.type == 'gs'
+                                        ? Colors.green.withOpacity(0.1)
+                                        : Colors.red.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(
+                                      color: item.type == 'gs'
+                                          ? Colors.green
+                                          : Colors.red,
+                                      width: 0.5,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    item.type == 'gs'
+                                        ? 'Good Stock (GS)'
+                                        : 'Bad Stock (BS)',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                      color: item.type == 'gs'
+                                          ? Colors.green
+                                          : Colors.red,
+                                    ),
                                   ),
                                 ),
                               ],
