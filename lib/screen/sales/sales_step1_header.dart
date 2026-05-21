@@ -5,6 +5,7 @@ import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:medhuro_mobile/model/customer_model.dart';
 import 'package:medhuro_mobile/provider/sales_provider.dart';
 import 'package:medhuro_mobile/widget/form_widget.dart';
+import 'package:medhuro_mobile/screen/sales/customer_picker_screen.dart';
 import 'package:provider/provider.dart';
 
 typedef OnHeaderComplete = void Function({
@@ -31,6 +32,7 @@ class _SalesStep1HeaderState extends State<SalesStep1Header> {
   CustomerModel? customerModel;
 
   String? selectedCustomerId;
+  String? selectedCustomerName;
   late DateTime selectedDate;
   int transactionDiscount = 0;
   late TextEditingController transactionDiscountController;
@@ -42,6 +44,7 @@ class _SalesStep1HeaderState extends State<SalesStep1Header> {
 
     // Load dari provider jika sudah ada
     selectedCustomerId = provider.selectedCustomerId;
+    selectedCustomerName = provider.selectedCustomerName;
     selectedDate = provider.selectedDate;
     transactionDiscount = provider.transactionDiscount;
 
@@ -71,6 +74,24 @@ class _SalesStep1HeaderState extends State<SalesStep1Header> {
     }
   }
 
+  void _openCustomerPicker() async {
+    final result = await Navigator.push<CustomerDataModel>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CustomerPickerScreen(
+          initialCustomerId: selectedCustomerId,
+        ),
+      ),
+    );
+
+    if (result != null) {
+      setState(() {
+        selectedCustomerId = result.id;
+        selectedCustomerName = result.name;
+      });
+    }
+  }
+
   void _handleNext() {
     if (selectedCustomerId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -83,6 +104,7 @@ class _SalesStep1HeaderState extends State<SalesStep1Header> {
     final provider = Provider.of<SalesProvider>(context, listen: false);
     provider.setHeaderInfo(
       customerId: selectedCustomerId!,
+      customerName: selectedCustomerName,
       paymentTermId:
           provider.selectedPaymentTermId ?? 0, // Will be set in step 4
       salesDate: selectedDate,
@@ -143,41 +165,37 @@ class _SalesStep1HeaderState extends State<SalesStep1Header> {
               ),
             ),
             const SizedBox(height: 8),
-            FutureBuilder<CustomerModel?>(
-              future: customersFuture,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (!snapshot.hasData || snapshot.data == null) {
-                  return const Center(child: Text('Gagal memuat customers'));
-                }
-
-                customerModel = snapshot.data;
-                return DropdownButtonFormField<String>(
-                  value: selectedCustomerId,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
+            InkWell(
+              onTap: _openCustomerPicker,
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(
+                    PalletConfig.borderRadius,
                   ),
-                  hint: const Text('Pilih customer'),
-                  items: customerModel!.data
-                      .map((customer) => DropdownMenuItem(
-                            value: customer.id,
-                            child: Text(customer.name),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedCustomerId = value;
-                    });
-                  },
-                );
-              },
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        selectedCustomerName ?? 'Pilih customer',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: selectedCustomerName != null
+                              ? Colors.black
+                              : Colors.grey.shade500,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Icon(Icons.arrow_forward_ios,
+                        color: PalletConfig.primaryColor, size: 18),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 24),
 
