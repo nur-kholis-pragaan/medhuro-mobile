@@ -12,6 +12,9 @@ class SalesItem {
   int sellingPriceCarton;
   int sellingPricePack;
   int sellingPricePcs;
+  int costPriceCarton;
+  int costPricePack;
+  int costPricePcs;
 
   SalesItem({
     required this.productId,
@@ -24,6 +27,9 @@ class SalesItem {
     this.sellingPriceCarton = 0,
     this.sellingPricePack = 0,
     this.sellingPricePcs = 0,
+    this.costPriceCarton = 0,
+    this.costPricePack = 0,
+    this.costPricePcs = 0,
   });
 
   int get subtotal {
@@ -162,6 +168,9 @@ class SalesProvider with ChangeNotifier {
     int sellingPriceCarton = 0,
     int sellingPricePack = 0,
     int sellingPricePcs = 0,
+    int costPriceCarton = 0,
+    int costPricePack = 0,
+    int costPricePcs = 0,
   }) {
     // Check if same product with same unit already exists
     final existingIndex = _items.indexWhere(
@@ -185,6 +194,9 @@ class SalesProvider with ChangeNotifier {
           sellingPriceCarton: sellingPriceCarton,
           sellingPricePack: sellingPricePack,
           sellingPricePcs: sellingPricePcs,
+          costPriceCarton: costPriceCarton,
+          costPricePack: costPricePack,
+          costPricePcs: costPricePcs,
         ),
       );
     }

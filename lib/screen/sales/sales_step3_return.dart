@@ -609,6 +609,7 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
                         label: const Text('Kembali'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey.shade600,
+                          foregroundColor: Colors.white,
                         ),
                       ),
                       Column(
@@ -631,6 +632,7 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
                             label: const Text('Lanjut'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: PalletConfig.primaryColor,
+                              foregroundColor: Colors.white,
                             ),
                           ),
                         ],

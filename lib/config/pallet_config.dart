@@ -20,6 +20,7 @@ class PalletConfig {
   static const Color secondaryColor = Color(0xFF10B981);
   static const Color shadePrimaryColor = Color(0xFF374151);
   static const Color shadeSecondary = Color(0xFFF3F4F6);
+  static const Color nutralColor = Color.fromRGBO(114, 114, 114, 1);
   static const Color bgColor = Color(0xFFFFFFFF);
   static const Color errorColor = Color(0xFFEF4444);
   static const Color successColor = Color(0xFF10B981);

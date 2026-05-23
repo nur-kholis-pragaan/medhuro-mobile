@@ -5,6 +5,8 @@ import 'package:medhuro_mobile/screen/product/product_screen.dart';
 import 'package:medhuro_mobile/screen/sales/my_sales_screen.dart';
 import 'package:medhuro_mobile/screen/sales/receivables_screen.dart';
 import 'package:medhuro_mobile/screen/sales/sales_wizard_screen.dart';
+import 'package:medhuro_mobile/screen/sales_payment/receivables_list_screen.dart';
+import 'package:medhuro_mobile/screen/sales_payment/payment_form_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -159,9 +161,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       _buildMenuCard(
                         icon: Icons.account_balance_wallet,
-                        title: 'Piutang',
+                        title: 'Daftar Piutang',
                         color: PalletConfig.primaryColor,
-                        onTap: () => _navigateTo(ReceivablesScreen()),
+                        onTap: () => _navigateTo(ReceivablesListScreen()),
+                      ),
+                      _buildMenuCard(
+                        icon: Icons.payment,
+                        title: 'Bayar Piutang',
+                        color: PalletConfig.primaryColor,
+                        onTap: () => _navigateTo(PaymentFormScreen()),
                       ),
                       _buildMenuCard(
                         icon: Icons.people,

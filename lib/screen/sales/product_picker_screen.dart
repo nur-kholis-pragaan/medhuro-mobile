@@ -111,6 +111,9 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
           sellingPriceCarton: product.sellingPriceCarton,
           sellingPricePack: product.sellingPricePack,
           sellingPricePcs: product.sellingPricePcs,
+          costPriceCarton: product.costPriceCarton,
+          costPricePack: product.costPricePack,
+          costPricePcs: product.costPricePcs,
         );
       }
 

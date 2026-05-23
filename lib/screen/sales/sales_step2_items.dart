@@ -438,33 +438,90 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                 ),
                                 const SizedBox(height: 12),
                                 // Subtotal
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.blue.shade50,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                Builder(builder: (context) {
+                                  final currentUnit =
+                                      unitSelectors[index] ?? item.unit;
+                                  int costPrice = 0;
+                                  if (currentUnit == 'carton') {
+                                    costPrice = item.costPriceCarton;
+                                  } else if (currentUnit == 'pack') {
+                                    costPrice = item.costPricePack;
+                                  } else if (currentUnit == 'pcs') {
+                                    costPrice = item.costPricePcs;
+                                  }
+                                  final bool isBelowCost = costPrice > 0 &&
+                                      item.subtotal < costPrice * item.qty;
+                                  return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
                                     children: [
-                                      const Text(
-                                        'Subtotal:',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
+                                      Container(
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: Colors.blue.shade50,
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            const Text(
+                                              'Subtotal:',
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            Text(
+                                              FormatterUtil
+                                                  .formatPriceWithCurrency(
+                                                      item.subtotal),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color:
+                                                    PalletConfig.primaryColor,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                      Text(
-                                        FormatterUtil.formatPriceWithCurrency(
-                                            item.subtotal),
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          color: PalletConfig.primaryColor,
+                                      if (isBelowCost) ...[
+                                        const SizedBox(height: 6),
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.red.shade50,
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                            border: Border.all(
+                                                color: Colors.red.shade300),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.warning_amber_rounded,
+                                                color: Colors.red.shade700,
+                                                size: 16,
+                                              ),
+                                              const SizedBox(width: 6),
+                                              Expanded(
+                                                child: Text(
+                                                  'Harga di bawah HPP (${FormatterUtil.formatPriceWithCurrency(costPrice)})',
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                    color: Colors.red.shade700,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     ],
-                                  ),
-                                ),
+                                  );
+                                }),
                               ],
                             ),
                           ),
@@ -536,6 +593,7 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                             label: const Text('Lanjut'),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: PalletConfig.primaryColor,
+                              foregroundColor: Colors.white,
                             ),
                           ),
                         ],
