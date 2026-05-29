@@ -64,6 +64,47 @@ class AuthApi {
       return null;
     }
   }
+
+  Future<LoginResponse?> updateProfile({
+    String? name,
+    String? password,
+    String? passwordConfirmation,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final uri = Uri.https(
+        EndpointConfig.domain,
+        EndpointConfig.path['auth.profile']!,
+      );
+
+      final body = <String, dynamic>{
+        if (name != null) 'name': name,
+        if (password != null) 'password': password,
+        if (password != null) 'password_confirmation': passwordConfirmation,
+      };
+
+      final response = await http.put(
+        uri,
+        headers: {
+          'Authorization': 'Bearer ${prefs.getString('token')}',
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+
+      debugPrint('Update Profile Response: ${response.body}');
+
+      if (response.statusCode == 200) {
+        return LoginResponse.fromJson(response.body);
+      } else {
+        return LoginResponse.fromJson(response.body);
+      }
+    } on Exception catch (e) {
+      debugPrint('Update Profile Error: $e');
+      return null;
+    }
+  }
 }
 
 class LoginResponse {

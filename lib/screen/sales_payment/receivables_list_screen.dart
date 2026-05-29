@@ -190,6 +190,12 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
         backgroundColor: PalletConfig.primaryColor,
         actions: [
           IconButton(
+            icon: const Icon(Icons.filter_list),
+            onPressed: () {
+              scaffoldKey.currentState?.openEndDrawer();
+            },
+          ),
+          IconButton(
             icon: const Icon(Icons.add),
             onPressed: () {
               Navigator.push(
@@ -206,109 +212,130 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
           ),
         ],
       ),
-      body: Column(
-        children: [
-          // 🔍 FILTERS
-          Padding(
-            padding: const EdgeInsets.all(PalletConfig.padding / 2),
+      endDrawer: Drawer(
+        child: Container(
+          color: Colors.white,
+          child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Status Filter
-                DropdownButtonFormField<String>(
-                  value: selectedStatus,
-                  decoration: InputDecoration(
-                    labelText: 'Status',
-                    border: OutlineInputBorder(
-                      borderRadius:
-                          BorderRadius.circular(PalletConfig.borderRadius),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  color: PalletConfig.primaryColor,
+                  child: const Text(
+                    'Filter Piutang',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                   ),
-                  items: [
-                    DropdownMenuItem(
-                      value: null,
-                      child: Text('-- Semua Status --'),
-                    ),
-                    ...statusOptions.map((status) {
-                      return DropdownMenuItem(
-                        value: status,
-                        child: Text(statusLabels[status] ?? status),
-                      );
-                    }),
-                  ],
-                  onChanged: (value) {
-                    setState(() => selectedStatus = value);
-                  },
                 ),
-                SizedBox(height: 12),
-
-                // Date Range Filter
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: _selectDateRange,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 12,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Status Filter
+                      DropdownButtonFormField<String>(
+                        value: selectedStatus,
+                        decoration: InputDecoration(
+                          labelText: 'Status',
+                          border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
                                 PalletConfig.borderRadius),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                dueDateFrom != null && dueDateTo != null
-                                    ? '${DateFormat('dd MMM', 'id_ID').format(dueDateFrom!)} - ${DateFormat('dd MMM', 'id_ID').format(dueDateTo!)}'
-                                    : 'Pilih Rentang',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        items: [
+                          DropdownMenuItem(
+                            value: null,
+                            child: Text('-- Semua Status --'),
+                          ),
+                          ...statusOptions.map((status) {
+                            return DropdownMenuItem(
+                              value: status,
+                              child: Text(statusLabels[status] ?? status),
+                            );
+                          }),
+                        ],
+                        onChanged: (value) {
+                          setState(() => selectedStatus = value);
+                        },
+                      ),
+                      SizedBox(height: 12),
+
+                      // Date Range Filter
+                      Row(
+                        children: [
+                          Expanded(
+                            child: GestureDetector(
+                              onTap: _selectDateRange,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                  borderRadius: BorderRadius.circular(
+                                      PalletConfig.borderRadius),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      dueDateFrom != null && dueDateTo != null
+                                          ? '${DateFormat('dd MMM', 'id_ID').format(dueDateFrom!)} - ${DateFormat('dd MMM', 'id_ID').format(dueDateTo!)}'
+                                          : 'Pilih Rentang',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12),
+                      SizedBox(height: 16),
 
-                // Action Buttons
-                Row(
-                  children: [
-                    Expanded(
-                      child: FormWidget().button(
-                        label: "Filter",
+                      // Action Buttons
+                      FormWidget().button(
                         icon: Icons.search,
-                        callBack: _applyFilters,
+                        label: 'Filter',
+                        callBack: () {
+                          _applyFilters();
+                          Navigator.pop(context);
+                        },
                         backgroundColor: PalletConfig.primaryColor,
-                        width: 120,
-                        height: 40,
+                        height: 44,
                       ),
-                    ),
-                    SizedBox(width: 8),
-                    FormWidget().button(
-                      label: "Reset",
-                      icon: Icons.refresh,
-                      callBack: _resetFilters,
-                      backgroundColor: PalletConfig.nutralColor,
-                      width: 120,
-                      height: 40,
-                    ),
-                  ],
+                      SizedBox(height: 8),
+                      FormWidget().button(
+                        icon: Icons.refresh,
+                        label: 'Reset',
+                        callBack: () {
+                          _resetFilters();
+                          Navigator.pop(context);
+                        },
+                        backgroundColor: PalletConfig.nutralColor,
+                        height: 44,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
           ),
-
-          // 📋 LIST
+        ),
+      ),
+      body: Column(
+        children: [
+          //  LIST
           Expanded(
             child: FutureBuilder<SalesPaymentTermModel?>(
               future: future,
@@ -471,7 +498,8 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
                                 Container(
                                   padding: EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: Colors.grey[100],
+                                    border:
+                                        Border.all(color: Colors.grey.shade200),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Column(

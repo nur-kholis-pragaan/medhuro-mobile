@@ -59,6 +59,10 @@ class SalesApi {
   }
 
   Future<SalesModel?> getMySales({
+    String? search,
+    String? customerId,
+    String? dateFrom,
+    String? dateTo,
     String? page,
     String? limit,
   }) async {
@@ -66,6 +70,10 @@ class SalesApi {
       final Map<String, dynamic> params = {
         'limit': limit ?? '15',
         'page': page ?? '1',
+        if (search != null) 'search': search,
+        if (customerId != null) 'customer_id': customerId,
+        if (dateFrom != null) 'date_from': dateFrom,
+        if (dateTo != null) 'date_to': dateTo,
       };
 
       final uri = Uri.https(
@@ -79,8 +87,8 @@ class SalesApi {
         'Authorization': 'Bearer ${prefs.getString("token")}',
         "Accept": "application/json",
       });
-      print(uri.toString());
-      print('getMySales response: ${response.statusCode} - ${response.body}');
+      // print(uri.toString());
+      // print('getMySales response: ${response.statusCode} - ${response.body}');
       if (response.statusCode == 200) {
         return SalesModel.fromJson(json.decode(response.body));
       } else {

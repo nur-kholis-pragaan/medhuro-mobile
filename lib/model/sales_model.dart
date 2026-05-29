@@ -184,6 +184,7 @@ class PaymentTermInfo {
   int remainingAmount;
   String? dueDate;
   String status;
+  List<PaymentHistoryInfo> paymentItems;
   String created_at;
   String updated_at;
 
@@ -198,6 +199,7 @@ class PaymentTermInfo {
     required this.remainingAmount,
     this.dueDate,
     required this.status,
+    required this.paymentItems,
     required this.created_at,
     required this.updated_at,
   });
@@ -214,6 +216,56 @@ class PaymentTermInfo {
       remainingAmount: json['remaining_amount'] ?? 0,
       dueDate: json['due_date'],
       status: json['status'] ?? '',
+      paymentItems: json.containsKey('payment_items') &&
+              json['payment_items'] != null
+          ? List<PaymentHistoryInfo>.from(
+              json['payment_items'].map((x) => PaymentHistoryInfo.fromJson(x)),
+            )
+          : [],
+      created_at: json['created_at'] ?? '',
+      updated_at: json['updated_at'] ?? '',
+    );
+  }
+}
+
+class PaymentHistoryInfo {
+  int id;
+  int paymentId;
+  int paymentTermId;
+  String amount;
+  String? paymentDate;
+  String? paymentMethod;
+  String? referenceNumber;
+  String? note;
+  String? sourceType;
+  String created_at;
+  String updated_at;
+
+  PaymentHistoryInfo({
+    required this.id,
+    required this.paymentId,
+    required this.paymentTermId,
+    required this.amount,
+    this.paymentDate,
+    this.paymentMethod,
+    this.referenceNumber,
+    this.note,
+    this.sourceType,
+    required this.created_at,
+    required this.updated_at,
+  });
+
+  factory PaymentHistoryInfo.fromJson(Map<String, dynamic> json) {
+    return PaymentHistoryInfo(
+      id: json['id'] ?? 0,
+      paymentId: json['sales_payment_id'] ?? 0,
+      paymentTermId: json['sales_payment_term_id'] ?? 0,
+      amount: json['amount']?.toString() ?? '0',
+      paymentDate: json['payment']?['payment_date'],
+      paymentMethod: json['payment']?['payment_method'] ?? 'Cash',
+      referenceNumber: json['payment']?['reference_number'],
+      note: json['payment']?['note'],
+      sourceType: json['source_type'],
       created_at: json['created_at'] ?? '',
       updated_at: json['updated_at'] ?? '',
     );

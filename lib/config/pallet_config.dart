@@ -25,7 +25,7 @@ class PalletConfig {
   static const Color errorColor = Color(0xFFEF4444);
   static const Color successColor = Color(0xFF10B981);
   static const Color warningColor = Color(0xFFFACC15);
-  static const padding = 20.0;
+  static const padding = 12.0;
   static const borderRadius = 12.0;
   static const fontSmallSize = 12.0;
   static const fontMediumSize = 14.0;

@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../../PHP Project/medhuro"
 		}
 	],
 	"settings": {

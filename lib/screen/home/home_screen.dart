@@ -7,6 +7,7 @@ import 'package:medhuro_mobile/screen/sales/receivables_screen.dart';
 import 'package:medhuro_mobile/screen/sales/sales_wizard_screen.dart';
 import 'package:medhuro_mobile/screen/sales_payment/receivables_list_screen.dart';
 import 'package:medhuro_mobile/screen/sales_payment/payment_form_screen.dart';
+import 'package:medhuro_mobile/screen/profile/profile_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -177,12 +178,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: PalletConfig.primaryColor,
                         onTap: () => _navigateTo(CustomerScreen()),
                       ),
-                      _buildMenuCard(
-                        icon: Icons.arrow_back,
-                        title: 'Retur',
-                        color: PalletConfig.primaryColor,
-                        onTap: () => _showComingSoon('Retur'),
-                      ),
                     ],
                   ),
                   SizedBox(height: 24),
@@ -201,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: Icons.person,
                       title: 'Profil',
                       color: PalletConfig.primaryColor,
-                      onTap: () => _showComingSoon('Profil'),
+                      onTap: () => _navigateTo(const ProfileScreen()),
                       isFullWidth: true,
                     ),
                   ),
