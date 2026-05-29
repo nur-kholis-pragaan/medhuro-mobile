@@ -46,7 +46,6 @@ class SalesPaymentApi {
         'Authorization': 'Bearer ${prefs.getString("token")}',
         "Accept": "application/json",
       });
-      print('SalesPaymentApi.getReceivables response: ${response.body}');
       if (response.statusCode == 200) {
         return SalesPaymentTermModel.fromJson(json.decode(response.body));
       } else {
@@ -79,9 +78,6 @@ class SalesPaymentApi {
         'Authorization': 'Bearer ${prefs.getString("token")}',
         "Accept": "application/json",
       });
-
-      print(
-          'SalesPaymentApi.getReceivablesByCustomer response: ${response.body}');
 
       if (response.statusCode == 200) {
         final jsonResponse = json.decode(response.body);

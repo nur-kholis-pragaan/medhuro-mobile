@@ -637,6 +637,15 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
                     ),
                     numeric: true,
                   ),
+                  DataColumn(
+                    label: Text(
+                      'Catatan',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
                 ],
                 rows: _buildPaymentHistoryRows(sale.paymentTerms),
               ),
@@ -668,6 +677,14 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
                   FormatterUtil.formatPriceWithCurrency(item.amount),
                   style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.right,
+                ),
+              ),
+              DataCell(
+                Text(
+                  item.note ?? '-',
+                  style: TextStyle(fontSize: 11),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ),
             ],

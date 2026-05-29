@@ -391,13 +391,16 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
                       final item = receivablesModel.data[index];
 
                       return Card(
+                        elevation: 0,
+                        color: Colors.white,
                         margin: EdgeInsets.symmetric(
-                          horizontal: PalletConfig.padding / 2,
+                          horizontal: PalletConfig.padding,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(
                             PalletConfig.borderRadius,
                           ),
+                          side: BorderSide(color: Colors.grey.shade200),
                         ),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(
@@ -407,7 +410,7 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
                             // Optional: show detail or navigate
                           },
                           child: Padding(
-                            padding: EdgeInsets.all(PalletConfig.padding / 2),
+                            padding: EdgeInsets.all(PalletConfig.padding),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -498,8 +501,6 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
                                 Container(
                                   padding: EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    border:
-                                        Border.all(color: Colors.grey.shade200),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Column(

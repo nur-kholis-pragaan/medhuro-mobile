@@ -6,6 +6,7 @@ import 'package:medhuro_mobile/model/sales_payment_term_model.dart';
 import 'package:medhuro_mobile/model/payment_method_model.dart';
 import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:medhuro_mobile/screen/sales/customer_picker_screen.dart';
+import 'package:medhuro_mobile/widget/form_widget.dart';
 import 'package:intl/intl.dart';
 
 class PaymentFormScreen extends StatefulWidget {
@@ -25,6 +26,8 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
   List<SalesPaymentTermDataModel> receivables = [];
   Map<String, double> allocationAmounts = {}; // Map<termId, amount>
   Map<String, bool> selectedTerms = {}; // Map<termId, isSelected>
+  Map<String, TextEditingController> allocationControllers =
+      {}; // Map<termId, controller>
   List<PaymentMethodDataModel> paymentMethods = [];
 
   bool loadingReceivables = false;
@@ -47,6 +50,10 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
     selectedCustomerController.dispose();
     paymentDateController.dispose();
     noteController.dispose();
+    // Dispose all allocation controllers
+    for (var controller in allocationControllers.values) {
+      controller.dispose();
+    }
     super.dispose();
   }
 
@@ -75,10 +82,22 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
         await SalesPaymentApi().getReceivablesByCustomer(selectedCustomer!.id);
 
     if (result != null) {
+      // Dispose old controllers
+      for (var controller in allocationControllers.values) {
+        controller.dispose();
+      }
+
       setState(() {
         receivables = result;
         allocationAmounts.clear();
         selectedTerms.clear();
+        allocationControllers.clear();
+
+        // Initialize controllers for each receivable
+        for (var term in receivables) {
+          allocationControllers[term.id] = TextEditingController();
+        }
+
         loadingReceivables = false;
       });
     } else {
@@ -527,46 +546,32 @@ class _PaymentFormScreenState extends State<PaymentFormScreen> {
                                                 SizedBox(height: 8),
 
                                                 // Allocation Input
-                                                TextFormField(
-                                                  initialValue: allocation > 0
-                                                      ? allocation.toString()
-                                                      : '',
-                                                  keyboardType:
-                                                      TextInputType.number,
-                                                  decoration: InputDecoration(
-                                                    labelText:
-                                                        'Nominal Pembayaran',
-                                                    hintText:
-                                                        '0 - ${_formatCurrency(term.remaining)}',
-                                                    border: OutlineInputBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                        PalletConfig
-                                                            .borderRadius,
-                                                      ),
-                                                    ),
-                                                    contentPadding:
-                                                        EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                    ),
-                                                  ),
+                                                FormWidget().currencyInput(
+                                                  controller:
+                                                      allocationControllers[
+                                                          term.id]!,
+                                                  label: 'Nominal Pembayaran',
                                                   onChanged: (value) {
-                                                    final amount =
-                                                        double.tryParse(
-                                                                value) ??
-                                                            0.0;
+                                                    // Convert int to double
+                                                    double doubleValue =
+                                                        value.toDouble();
 
                                                     // Validate overpayment
-                                                    if (amount >
+                                                    if (doubleValue >
                                                         term.remaining) {
                                                       _showError(
                                                         'Nominal tidak boleh melebihi sisa piutang (${_formatCurrency(term.remaining)})',
                                                       );
                                                       _updateAllocation(term.id,
                                                           term.remaining);
+                                                      allocationControllers[
+                                                                  term.id]
+                                                              ?.text =
+                                                          _formatCurrency(
+                                                              term.remaining);
                                                     } else {
                                                       _updateAllocation(
-                                                          term.id, amount);
+                                                          term.id, doubleValue);
                                                     }
                                                   },
                                                 ),
