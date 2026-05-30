@@ -36,6 +36,7 @@ class SalesDataModel {
   String status;
   List<SalesItemModel> items;
   List<PaymentTermInfo> paymentTerms;
+  SalesReturnInfo? salesReturn;
   String created_at;
   String updated_at;
 
@@ -54,6 +55,7 @@ class SalesDataModel {
     required this.status,
     required this.items,
     required this.paymentTerms,
+    this.salesReturn,
     required this.created_at,
     required this.updated_at,
   });
@@ -78,6 +80,9 @@ class SalesDataModel {
       paymentTerms: List<PaymentTermInfo>.from(
         json['payment_terms'].map((x) => PaymentTermInfo.fromJson(x)),
       ),
+      salesReturn: json['sales_return'] != null
+          ? SalesReturnInfo.fromJson(json['sales_return'])
+          : null,
       created_at: json['created_at'] ?? '',
       updated_at: json['updated_at'] ?? '',
     );
@@ -266,6 +271,95 @@ class PaymentHistoryInfo {
       referenceNumber: json['payment']?['reference_number'],
       note: json['payment']?['note'],
       sourceType: json['source_type'],
+      created_at: json['created_at'] ?? '',
+      updated_at: json['updated_at'] ?? '',
+    );
+  }
+}
+
+class SalesReturnInfo {
+  int id;
+  int salesId;
+  String returnNumber;
+  String returnDate;
+  String totalAmount;
+  List<SalesReturnItemInfo> items;
+  String created_at;
+  String updated_at;
+
+  SalesReturnInfo({
+    required this.id,
+    required this.salesId,
+    required this.returnNumber,
+    required this.returnDate,
+    required this.totalAmount,
+    required this.items,
+    required this.created_at,
+    required this.updated_at,
+  });
+
+  factory SalesReturnInfo.fromJson(Map<String, dynamic> json) {
+    return SalesReturnInfo(
+      id: json['id'] ?? 0,
+      salesId: json['sales_id'] ?? 0,
+      returnNumber: json['return_number'] ?? '',
+      returnDate: json['return_date'] ?? '',
+      totalAmount: json['total_amount']?.toString() ?? '0',
+      items: json.containsKey('items') && json['items'] != null
+          ? List<SalesReturnItemInfo>.from(
+              json['items'].map((x) => SalesReturnItemInfo.fromJson(x)),
+            )
+          : [],
+      created_at: json['created_at'] ?? '',
+      updated_at: json['updated_at'] ?? '',
+    );
+  }
+}
+
+class SalesReturnItemInfo {
+  int id;
+  int returnId;
+  int productId;
+  ProductInfo product;
+  int qtyCarton;
+  int qtyPack;
+  int qtyPcs;
+  String unit;
+  String price;
+  String subtotal;
+  String? type;
+  String created_at;
+  String updated_at;
+
+  SalesReturnItemInfo({
+    required this.id,
+    required this.returnId,
+    required this.productId,
+    required this.product,
+    required this.qtyCarton,
+    required this.qtyPack,
+    required this.qtyPcs,
+    required this.unit,
+    required this.price,
+    required this.subtotal,
+    this.type,
+    required this.created_at,
+    required this.updated_at,
+  });
+
+  factory SalesReturnItemInfo.fromJson(Map<String, dynamic> json) {
+    return SalesReturnItemInfo(
+      id: json['id'] ?? 0,
+      returnId: json['sales_return_id'] ?? 0,
+      productId: json['product_id'] ?? 0,
+      product: ProductInfo.fromJson(json['product']),
+      qtyCarton: json['qty_carton'] ?? 0,
+      qtyPack: json['qty_pack'] ?? 0,
+      qtyPcs: json['qty_pcs'] ?? 0,
+      unit: json['unit'] ?? '',
+      price: json['price']?.toString() ?? '0',
+      subtotal: json['subtotal']?.toString() ?? '0',
+      type: json['type'],
       created_at: json['created_at'] ?? '',
       updated_at: json['updated_at'] ?? '',
     );

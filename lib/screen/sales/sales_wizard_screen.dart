@@ -85,12 +85,16 @@ class _SalesWizardScreenState extends State<SalesWizardScreen> {
                 fontWeight: FontWeight.bold, color: Colors.white),
           ),
           backgroundColor: PalletConfig.primaryColor,
-          leading: _currentStepIndex > 0
-              ? IconButton(
-                  icon: const Icon(Icons.arrow_back),
-                  onPressed: _previousStep,
-                )
-              : null,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              if (_currentStepIndex > 0) {
+                _previousStep();
+              } else {
+                Navigator.pop(context);
+              }
+            },
+          ),
           automaticallyImplyLeading: false,
         ),
         body: Column(

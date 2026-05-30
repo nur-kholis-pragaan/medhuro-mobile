@@ -63,6 +63,12 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
                   SizedBox(height: PalletConfig.padding),
                   _buildItemsCard(sale),
                   SizedBox(height: PalletConfig.padding),
+                  if (sale.salesReturn != null &&
+                      sale.salesReturn!.items.isNotEmpty)
+                    _buildReturnItemsCard(sale.salesReturn!),
+                  if (sale.salesReturn != null &&
+                      sale.salesReturn!.items.isNotEmpty)
+                    SizedBox(height: PalletConfig.padding),
                   _buildTotalSummaryCard(sale),
                   SizedBox(height: PalletConfig.padding),
                   if (sale.paymentTerms.isNotEmpty)
@@ -358,6 +364,122 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
               Text(
                 FormatterUtil.formatPriceWithCurrency(item.subtotal),
                 style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: PalletConfig.primaryColor,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Return Items Card
+  Widget _buildReturnItemsCard(SalesReturnInfo salesReturn) {
+    return Card(
+      elevation: 0,
+      color: Colors.white,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(PalletConfig.borderRadius),
+        side: BorderSide(color: Colors.grey.shade200),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(PalletConfig.padding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Item Retur',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: PalletConfig.fontLargeSize,
+                  ),
+                ),
+                Text(
+                  '#${salesReturn.returnNumber}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    color: PalletConfig.primaryColor,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 4),
+            Text(
+              'Tgl: ${salesReturn.returnDate}',
+              style: TextStyle(fontSize: 11, color: Colors.grey),
+            ),
+            SizedBox(height: 12),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemCount: salesReturn.items.length,
+              separatorBuilder: (context, index) => Divider(height: 12),
+              itemBuilder: (context, index) {
+                SalesReturnItemInfo item = salesReturn.items[index];
+                return _buildReturnItemRow(item);
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Single Return Item Row
+  Widget _buildReturnItemRow(SalesReturnItemInfo item) {
+    return Container(
+      padding: EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade200),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            item.product.name,
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+            ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+          ),
+          SizedBox(height: 6),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Qty: ${item.qtyCarton > 0 ? item.qtyCarton : item.qtyPack > 0 ? item.qtyPack : item.qtyPcs} ${item.unit}',
+                style: TextStyle(fontSize: 12),
+              ),
+              Text(
+                'Harga: ${FormatterUtil.formatPriceWithCurrency(double.parse(item.price))}',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 6),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              if (item.type != null)
+                Text(
+                  'Tipe: ${item.type == 'bs' ? 'Busuk' : 'Gosong'}',
+                  style: TextStyle(fontSize: 11, color: Colors.grey),
+                ),
+              Text(
+                'Total: ${FormatterUtil.formatPriceWithCurrency(double.parse(item.subtotal))}',
+                style: TextStyle(
+                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: PalletConfig.primaryColor,
                 ),

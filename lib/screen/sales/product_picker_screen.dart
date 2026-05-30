@@ -375,6 +375,9 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
                                             PalletConfig.primaryColor,
                                         disabledBackgroundColor:
                                             Colors.grey.shade300,
+                                        foregroundColor: Colors.white,
+                                        disabledForegroundColor:
+                                            Colors.grey.shade600,
                                       ),
                                     ),
                                   ],
@@ -430,6 +433,7 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
                     label: const Text('Selesai'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: PalletConfig.primaryColor,
+                      foregroundColor: Colors.white,
                     ),
                   ),
                 ],

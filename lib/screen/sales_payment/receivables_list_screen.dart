@@ -180,7 +180,7 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         elevation: 1,
         title: const Text(
@@ -370,7 +370,7 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
                     controller: scrollController,
                     physics: const AlwaysScrollableScrollPhysics(),
                     padding: EdgeInsets.only(
-                      top: PalletConfig.padding / 2,
+                      top: PalletConfig.padding,
                       bottom: PalletConfig.padding,
                     ),
                     itemCount: receivablesModel.data.length +
@@ -392,9 +392,9 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
 
                       return Card(
                         elevation: 0,
-                        color: Colors.white,
                         margin: EdgeInsets.symmetric(
-                          horizontal: PalletConfig.padding,
+                          horizontal: PalletConfig.padding / 2,
+                          vertical: PalletConfig.padding / 2,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(

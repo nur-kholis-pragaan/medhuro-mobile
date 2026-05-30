@@ -4,6 +4,7 @@ import 'package:medhuro_mobile/model/sales_model.dart';
 import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:medhuro_mobile/screen/sales/sales_detail_screen.dart';
 import 'package:medhuro_mobile/screen/sales/customer_picker_screen.dart';
+import 'package:medhuro_mobile/screen/sales/sales_wizard_screen.dart';
 import 'package:medhuro_mobile/util/formatter_util.dart';
 import 'package:medhuro_mobile/widget/form_widget.dart';
 import 'package:intl/intl.dart';
@@ -193,13 +194,38 @@ class _MySalesScreenState extends State<MySalesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey.shade100,
       appBar: AppBar(
         elevation: 1,
         title: Text("Penjualan Saya",
             style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
         backgroundColor: PalletConfig.primaryColor,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.of(context)
+                  .push(MaterialPageRoute(
+                builder: (context) => SalesWizardScreen(),
+              ))
+                  .then((_) {
+                setState(() {
+                  future = getSalesData(
+                    search: searchController.text.isEmpty
+                        ? null
+                        : searchController.text,
+                    customerId: selectedCustomerId,
+                    dateFrom: salesDateFrom != null
+                        ? DateFormat('yyyy-MM-dd').format(salesDateFrom!)
+                        : null,
+                    dateTo: salesDateTo != null
+                        ? DateFormat('yyyy-MM-dd').format(salesDateTo!)
+                        : null,
+                  );
+                });
+              });
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: () {
