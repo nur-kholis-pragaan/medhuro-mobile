@@ -147,35 +147,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       ),
                     ),
                     SizedBox(height: PalletConfig.padding),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: PalletConfig.primaryColor,
-                          padding: EdgeInsets.symmetric(vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(
-                              PalletConfig.borderRadius,
-                            ),
-                          ),
-                        ),
-                        onPressed: () {
-                          // TODO: Implement order action
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('Pesan ${product.name}'),
-                            ),
-                          );
-                        },
-                        child: Text(
-                          'Pesan Produk',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),

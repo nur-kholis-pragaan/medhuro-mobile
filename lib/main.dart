@@ -89,13 +89,12 @@ class _SplashScreenState extends State<SplashScreen> {
               width: 120,
               height: 120,
               decoration: BoxDecoration(
-                color: PalletConfig.primaryColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: const Icon(
-                Icons.app_registration,
-                size: 70,
-                color: PalletConfig.primaryColor,
+              child: Image.asset(
+                'asset/images/icon.png',
+                width: 120,
+                height: 120,
               ),
             ),
             const SizedBox(height: 30),

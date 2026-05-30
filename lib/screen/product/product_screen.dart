@@ -149,7 +149,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             ),
                           );
                         } else {
-                          return ListTile(
+                          return GestureDetector(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => ProductDetailScreen(
@@ -157,41 +157,95 @@ class _ProductScreenState extends State<ProductScreen> {
                                 ),
                               ));
                             },
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: PalletConfig.padding / 2,
-                              vertical: 8,
-                            ),
-                            title: Text(
-                              "${productModel.data[i].name}",
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
+                            child: Card(
+                              elevation: 0,
+                              color: Colors.white,
+                              margin: EdgeInsets.symmetric(
+                                horizontal: PalletConfig.padding / 2,
+                                vertical: 6,
                               ),
-                            ),
-                            subtitle: Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    "Kode: ${productModel.data[i].code}",
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                  Text(
-                                    "Stok Carton: ${productModel.data[i].inventory.qtyCarton}",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: PalletConfig.secondaryColor,
-                                      fontWeight: FontWeight.w600,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(
+                                  PalletConfig.borderRadius,
+                                ),
+                                side: BorderSide(color: Colors.grey.shade200),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                productModel.data[i].name,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 14,
+                                                ),
+                                                maxLines: 2,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                              SizedBox(height: 4),
+                                              Text(
+                                                "Kode: ${productModel.data[i].code}",
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Icon(Icons.arrow_forward_ios,
+                                            size: 16, color: Colors.grey),
+                                      ],
                                     ),
-                                  ),
-                                  Text(
-                                    "Stok Pack: ${productModel.data[i].inventory.qtyPack}, Pcs: ${productModel.data[i].inventory.qtyPcs}",
-                                    style: TextStyle(fontSize: 12),
-                                  ),
-                                ],
+                                    SizedBox(height: 8),
+                                    Divider(height: 1),
+                                    SizedBox(height: 8),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "Stok",
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: Colors.grey,
+                                              ),
+                                            ),
+                                            SizedBox(height: 2),
+                                            Text(
+                                              "C: ${productModel.data[i].inventory.qtyCarton}, P: ${productModel.data[i].inventory.qtyPack}, Pcs: ${productModel.data[i].inventory.qtyPcs}",
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                                color:
+                                                    PalletConfig.primaryColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
-                            trailing: Icon(Icons.arrow_forward_ios, size: 16),
                           );
                         }
                       },

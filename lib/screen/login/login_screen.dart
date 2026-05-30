@@ -21,8 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    emailController.text = 'salesman1@email.com';
-    passwordController.text = '123456';
+    emailController.text = '';
+    passwordController.text = '';
   }
 
   void login() async {
@@ -105,13 +105,12 @@ class _LoginScreenState extends State<LoginScreen> {
               width: 100,
               height: 100,
               decoration: BoxDecoration(
-                color: Colors.blueAccent,
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: const Icon(
-                Icons.app_registration,
-                size: 60,
-                color: Colors.white,
+              child: Image.asset(
+                'asset/images/icon.png',
+                width: 100,
+                height: 100,
               ),
             ),
             const SizedBox(height: 30),
