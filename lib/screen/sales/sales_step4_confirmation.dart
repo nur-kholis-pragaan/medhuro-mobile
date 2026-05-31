@@ -5,7 +5,7 @@ import 'package:medhuro_mobile/api/sales_api.dart';
 import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:medhuro_mobile/model/payment_term_model.dart';
 import 'package:medhuro_mobile/util/formatter_util.dart';
-import 'package:medhuro_mobile/util/currency_formatter.dart';
+// import 'package:medhuro_mobile/util/currency_formatter.dart';
 import 'package:medhuro_mobile/widget/form_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:medhuro_mobile/provider/sales_provider.dart';
@@ -290,42 +290,11 @@ class _SalesStep4ConfirmationState extends State<SalesStep4Confirmation> {
                       onChanged: (value) {
                         setState(() {
                           selectedPaymentTermId = value;
-                          // Find the selected payment term to get its type
                           if (value != null && paymentTermModel != null) {
                             final selectedTerm = paymentTermModel!.data
                                 .firstWhere((term) => term.id == value,
                                     orElse: () => paymentTermModel!.data.first);
                             selectedPaymentTermType = selectedTerm.type;
-
-                            // Check if payment term is cash/immediate payment
-                            // (cash, tunai, lunas types OR dueDays == 0)
-                            final isCashPayment = selectedTerm.type
-                                        .toLowerCase() ==
-                                    'cash' ||
-                                selectedTerm.type.toLowerCase() == 'tunai' ||
-                                selectedTerm.type.toLowerCase() == 'lunas' ||
-                                selectedTerm.dueDays == 0;
-
-                            if (isCashPayment) {
-                              // Calculate final total
-                              int finalTotal = Provider.of<SalesProvider>(
-                                          context,
-                                          listen: false)
-                                      .totalSales -
-                                  Provider.of<SalesProvider>(context,
-                                          listen: false)
-                                      .totalReturn -
-                                  Provider.of<SalesProvider>(context,
-                                          listen: false)
-                                      .transactionDiscount;
-                              // Format and set the value
-                              String formatted =
-                                  CurrencyFormatter.formatCurrency(finalTotal);
-                              cashAmountController.text = formatted;
-                            } else {
-                              // Clear the field for credit terms
-                              cashAmountController.clear();
-                            }
                           }
                         });
                       },
@@ -582,49 +551,11 @@ class _SalesStep4ConfirmationState extends State<SalesStep4Confirmation> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Builder(
-                  builder: (context) {
-                    // Determine if this is a cash payment term
-                    bool isCashPayment = false;
-                    if (selectedPaymentTermId != null &&
-                        paymentTermModel != null) {
-                      final selectedTerm = paymentTermModel!.data.firstWhere(
-                        (term) => term.id == selectedPaymentTermId,
-                        orElse: () => paymentTermModel!.data.first,
-                      );
-                      isCashPayment =
-                          selectedTerm.type.toLowerCase() == 'cash' ||
-                              selectedTerm.type.toLowerCase() == 'tunai' ||
-                              selectedTerm.type.toLowerCase() == 'lunas' ||
-                              selectedTerm.dueDays == 0;
-                    }
-
-                    return isCashPayment
-                        ? TextField(
-                            controller: cashAmountController,
-                            readOnly: true,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: 'Jumlah Uang',
-                              filled: true,
-                              fillColor: Colors.grey[300],
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 8,
-                                horizontal: 12,
-                              ),
-                              hintText: 'Otomatis terisi sesuai total',
-                            ),
-                          )
-                        : FormWidget().currencyInput(
-                            controller: cashAmountController,
-                            label: 'Jumlah Uang',
-                            onChanged: (value) {
-                              setState(() {});
-                            },
-                          );
+                FormWidget().currencyInput(
+                  controller: cashAmountController,
+                  label: 'Jumlah Uang',
+                  onChanged: (value) {
+                    setState(() {});
                   },
                 ),
                 const SizedBox(height: 24),
