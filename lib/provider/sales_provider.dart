@@ -33,7 +33,15 @@ class SalesItem {
   });
 
   int get subtotal {
-    return (price * qty) - discountAmount;
+    return (price * qty) - (discountAmount * qty);
+  }
+
+  int get totalPrice {
+    return price * qty;
+  }
+
+  int get totalDiscount {
+    return discountAmount * qty;
   }
 
   Map<String, dynamic> toJson() {
@@ -76,7 +84,15 @@ class ReturnItem {
   });
 
   int get subtotal {
-    return (price * qty) - discountAmount;
+    return (price * qty) - (discountAmount * qty);
+  }
+
+  int get totalPrice {
+    return price * qty;
+  }
+
+  int get totalDiscount {
+    return discountAmount * qty;
   }
 
   Map<String, dynamic> toJson() {

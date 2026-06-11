@@ -437,7 +437,7 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                   ],
                                 ),
                                 const SizedBox(height: 12),
-                                // Subtotal
+                                // Summary Info
                                 Builder(builder: (context) {
                                   final currentUnit =
                                       unitSelectors[index] ?? item.unit;
@@ -455,6 +455,75 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
                                     children: [
+                                      // Harga Total
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey.shade50,
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Harga Total:',
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.grey.shade700,
+                                              ),
+                                            ),
+                                            Text(
+                                              FormatterUtil
+                                                  .formatPriceWithCurrency(
+                                                      item.totalPrice),
+                                              style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.grey.shade700,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      // Total Diskon
+                                      if (item.totalDiscount > 0)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8, vertical: 6),
+                                          decoration: BoxDecoration(
+                                            color: Colors.orange.shade50,
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'Total Diskon:',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.orange.shade900,
+                                                ),
+                                              ),
+                                              Text(
+                                                '- ${FormatterUtil.formatPriceWithCurrency(item.totalDiscount)}',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.orange.shade900,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      if (item.totalDiscount > 0)
+                                        const SizedBox(height: 4),
+                                      // Subtotal
                                       Container(
                                         padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(
@@ -485,6 +554,7 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                           ],
                                         ),
                                       ),
+                                      // Warning HPP
                                       if (isBelowCost) ...[
                                         const SizedBox(height: 6),
                                         Container(
@@ -507,7 +577,7 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                               const SizedBox(width: 6),
                                               Expanded(
                                                 child: Text(
-                                                  'Harga di bawah HPP (${FormatterUtil.formatPriceWithCurrency(costPrice)})',
+                                                  'Subtotal di bawah HPP (${FormatterUtil.formatPriceWithCurrency(costPrice * item.qty)})',
                                                   style: TextStyle(
                                                     fontSize: 11,
                                                     color: Colors.red.shade700,
