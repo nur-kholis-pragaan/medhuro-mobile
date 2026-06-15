@@ -122,7 +122,13 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
       }
 
       if (discountControllers.containsKey(i)) {
-        discount = int.tryParse(discountControllers[i]!.text) ?? 0;
+        // Clean up format sebelum parse (hapus separator titik/koma)
+        final discountText = discountControllers[i]!.text;
+        discount = discountText.isEmpty
+            ? 0
+            : int.tryParse(
+                    discountText.replaceAll('.', '').replaceAll(',', '')) ??
+                0;
       } else {
         discount = salesProvider.items[i].discountAmount;
       }
