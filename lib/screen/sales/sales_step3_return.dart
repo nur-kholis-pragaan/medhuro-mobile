@@ -281,7 +281,7 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
                                   Row(
                                     children: [
                                       SizedBox(
-                                        width: 180,
+                                        width: 200,
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -362,6 +362,8 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
                                             SizedBox(
                                               height: 36,
                                               child: FormWidget().qtyControl(
+                                                controller: _getQtyController(
+                                                    index, salesProvider),
                                                 value: int.tryParse(
                                                         _getQtyController(index,
                                                                 salesProvider)
@@ -376,7 +378,11 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
                                                           _getDiscountController(
                                                                   index,
                                                                   salesProvider)
-                                                              .text) ??
+                                                              .text
+                                                              .replaceAll(
+                                                                  '.', '')
+                                                              .replaceAll(
+                                                                  ',', '')) ??
                                                       0;
                                                   salesProvider
                                                       .updateReturnItem(index,

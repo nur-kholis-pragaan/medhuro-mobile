@@ -572,7 +572,7 @@ class _MySalesScreenState extends State<MySalesScreen> {
                                             Text(
                                               FormatterUtil
                                                   .formatPriceWithCurrency(
-                                                sale.totalAmount,
+                                                sale.totalAmountEffective,
                                               ),
                                               style: TextStyle(
                                                 fontSize: 12,

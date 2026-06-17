@@ -493,6 +493,8 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
 
   // Total Summary Card
   Widget _buildTotalSummaryCard(SalesDataModel sale) {
+    final hasReturn = double.parse(sale.returnAmount) > 0;
+
     return Card(
       elevation: 0,
       color: Colors.white,
@@ -528,22 +530,86 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Total:',
+                  'Total Penjualan:',
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
                 Text(
                   FormatterUtil.formatPriceWithCurrency(sale.totalAmount),
                   style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                     color: PalletConfig.primaryColor,
                   ),
                 ),
               ],
             ),
+            if (hasReturn) ...[
+              SizedBox(height: 8),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total Retur:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Text(
+                    '- ${FormatterUtil.formatPriceWithCurrency(sale.returnAmount)}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.red,
+                    ),
+                  ),
+                ],
+              ),
+              Divider(height: 16),
+            ],
+            if (hasReturn)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total Efektif:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    FormatterUtil.formatPriceWithCurrency(
+                        sale.totalAmountEffective),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: PalletConfig.primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            if (!hasReturn)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total Efektif:',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text(
+                    FormatterUtil.formatPriceWithCurrency(
+                        sale.totalAmountEffective),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: PalletConfig.primaryColor,
+                    ),
+                  ),
+                ],
+              ),
           ],
         ),
       ),

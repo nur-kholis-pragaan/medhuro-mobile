@@ -125,4 +125,30 @@ class SalesApi {
       return null;
     }
   }
+
+  Future<Map<String, dynamic>?> getMyStats() async {
+    try {
+      final uri = Uri.https(
+        EndpointConfig.domain,
+        EndpointConfig.path['my_stats']!,
+      );
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final response = await http.get(uri, headers: {
+        'Authorization': 'Bearer ${prefs.getString("token")}',
+        "Accept": "application/json",
+      });
+
+      if (response.statusCode == 200) {
+        final jsonResponse = json.decode(response.body);
+        return jsonResponse['data'];
+      } else {
+        print('Error: ${response.statusCode} - ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
 }

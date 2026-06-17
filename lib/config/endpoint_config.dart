@@ -1,6 +1,6 @@
 class EndpointConfig {
-  static const String domain = 'dev-medhuro.inalife.id';
-  // static const String domain = 'unfumbled-otiosely-brigida.ngrok-free.dev';
+  // static const String domain = 'dev-medhuro.inalife.id';
+  static const String domain = 'unfumbled-otiosely-brigida.ngrok-free.dev';
 
   static const Map<String, String> path = {
     'auth.login': '/api/auth/login',
@@ -12,6 +12,7 @@ class EndpointConfig {
     'payment_methods': '/api/payment-methods',
     'sales': '/api/sales',
     'my_sales': '/api/my-sales',
+    'my_stats': '/api/my-stats',
     'sales_payments': '/api/sales-payments',
   };
 }

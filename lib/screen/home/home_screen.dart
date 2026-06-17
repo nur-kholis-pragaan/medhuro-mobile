@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medhuro_mobile/api/sales_api.dart';
 import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:medhuro_mobile/screen/customer/customer_screen.dart';
 import 'package:medhuro_mobile/screen/product/product_screen.dart';
@@ -8,6 +9,7 @@ import 'package:medhuro_mobile/screen/sales/sales_wizard_screen.dart';
 import 'package:medhuro_mobile/screen/sales_payment/receivables_list_screen.dart';
 import 'package:medhuro_mobile/screen/sales_payment/payment_form_screen.dart';
 import 'package:medhuro_mobile/screen/profile/profile_screen.dart';
+import 'package:medhuro_mobile/util/formatter_util.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -20,6 +22,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String userName = '';
   String userEmail = '';
+  final SalesApi _salesApi = SalesApi();
+  Map<String, dynamic>? _stats;
+  bool _isLoadingStats = true;
 
   @override
   void initState() {
@@ -27,6 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
     debugPrint('HomeScreen initState called');
     super.initState();
     _loadUserData();
+    _loadStats();
   }
 
   void _loadUserData() async {
@@ -34,6 +40,19 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       userName = prefs.getString('userName') ?? 'User';
       userEmail = prefs.getString('userEmail') ?? 'user@email.com';
+    });
+  }
+
+  void _loadStats() async {
+    setState(() {
+      _isLoadingStats = true;
+    });
+
+    final stats = await _salesApi.getMyStats();
+
+    setState(() {
+      _stats = stats;
+      _isLoadingStats = false;
     });
   }
 
@@ -120,6 +139,110 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
+            // Stats Cards Section
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: PalletConfig.padding,
+                vertical: PalletConfig.padding / 2,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Statistik Penjualan',
+                    style: TextStyle(
+                      fontSize: PalletConfig.fontLargeSize,
+                      fontWeight: FontWeight.bold,
+                      color: PalletConfig.shadePrimaryColor,
+                    ),
+                  ),
+                  SizedBox(height: 12),
+                  _isLoadingStats
+                      ? Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: CircularProgressIndicator(
+                              color: PalletConfig.primaryColor,
+                            ),
+                          ),
+                        )
+                      : _stats == null
+                          ? Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Column(
+                                  children: [
+                                    Icon(Icons.error_outline,
+                                        size: 48, color: Colors.grey),
+                                    SizedBox(height: 8),
+                                    Text(
+                                      'Gagal memuat statistik',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                    SizedBox(height: 8),
+                                    ElevatedButton.icon(
+                                      onPressed: _loadStats,
+                                      icon: Icon(Icons.refresh),
+                                      label: Text('Muat Ulang'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor:
+                                            PalletConfig.primaryColor,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                // Row with 2 cards: Omzet Hari Ini & Omzet Bulan Ini
+                                Row(
+                                  children: [
+                                    // Omzet Hari Ini
+                                    Expanded(
+                                      child: _buildCompactStatsCard(
+                                        title: 'Omzet Hari Ini',
+                                        amount: _stats!['today']
+                                                ['total_amount_effective']
+                                            .toDouble(),
+                                        count: _stats!['today']
+                                            ['transaction_count'],
+                                        icon: Icons.today,
+                                        gradientColors: [
+                                          PalletConfig.primaryColor,
+                                          PalletConfig.primaryColor
+                                              .withOpacity(0.7),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(width: 12),
+                                    // Omzet Bulan Ini
+                                    Expanded(
+                                      child: _buildCompactStatsCard(
+                                        title: 'Omzet Bulan Ini',
+                                        amount: _stats!['month']
+                                                ['total_amount_effective']
+                                            .toDouble(),
+                                        count: _stats!['month']
+                                            ['transaction_count'],
+                                        icon: Icons.calendar_month,
+                                        gradientColors: [
+                                          Colors.green,
+                                          Colors.green.withOpacity(0.7),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                ],
+              ),
+            ),
+
+            SizedBox(height: 16),
+
             // Menu Section
             Padding(
               padding: const EdgeInsets.all(PalletConfig.padding),
@@ -201,6 +324,75 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                 ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCompactStatsCard({
+    required String title,
+    required double amount,
+    required int count,
+    required IconData icon,
+    required List<Color> gradientColors,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: gradientColors,
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(PalletConfig.borderRadius),
+        boxShadow: [
+          BoxShadow(
+            color: gradientColors[0].withOpacity(0.3),
+            blurRadius: 8,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(PalletConfig.padding),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.2),
+                borderRadius:
+                    BorderRadius.circular(PalletConfig.borderRadius / 2),
+              ),
+              child: Icon(icon, color: Colors.white, size: 24),
+            ),
+            SizedBox(height: 12),
+            Text(
+              title,
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.9),
+                fontSize: 11,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              FormatterUtil.formatCurrency(amount),
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 2),
+            Text(
+              '$count Trx',
+              style: TextStyle(
+                color: Colors.white.withOpacity(0.8),
+                fontSize: 10,
               ),
             ),
           ],

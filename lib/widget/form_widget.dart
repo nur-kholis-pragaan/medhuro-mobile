@@ -272,7 +272,7 @@ class FormWidget {
         return GestureDetector(
           onTap: () => onChanged(unit),
           child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
             decoration: BoxDecoration(
               color: isSelected ? Colors.blue : Colors.white,
               border: Border.all(
@@ -295,13 +295,23 @@ class FormWidget {
     );
   }
 
-  /// Quantity Control - dengan tombol +/- dan display qty
+  /// Quantity Control - dengan tombol +/- dan text field untuk input langsung
   Widget qtyControl({
     required int value,
     required ValueChanged<int> onChanged,
     int minValue = 1,
     Color? color,
+    TextEditingController? controller,
   }) {
+    // Gunakan controller jika disediakan, atau buat internal controller
+    final TextEditingController qtyController =
+        controller ?? TextEditingController(text: value.toString());
+
+    // Sync controller text jika value berubah dari luar (misal dari tombol +/-)
+    if (controller == null && qtyController.text != value.toString()) {
+      qtyController.text = value.toString();
+    }
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -309,29 +319,90 @@ class FormWidget {
           icon: Icons.remove,
           onPressed: () {
             if (value > minValue) {
-              onChanged(value - 1);
+              final newValue = value - 1;
+              qtyController.text = newValue.toString();
+              onChanged(newValue);
             }
           },
           color: color ?? Colors.grey.shade600,
           size: 20,
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 8),
         SizedBox(
-          width: 15,
-          child: Text(
-            value.toString(),
+          width: 50,
+          child: TextField(
+            controller: qtyController,
+            keyboardType: TextInputType.number,
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontWeight: FontWeight.w600,
               fontSize: 16,
             ),
+            decoration: InputDecoration(
+              contentPadding: const EdgeInsets.symmetric(
+                vertical: 8,
+                horizontal: 4,
+              ),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+                borderSide: BorderSide(color: Colors.grey.shade300),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+                borderSide: BorderSide(color: Colors.grey.shade300),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(6),
+                borderSide: BorderSide(color: color ?? Colors.blue, width: 2),
+              ),
+            ),
+            onChanged: (text) {
+              // Allow empty temporarily (untuk bisa hapus semua angka)
+              if (text.isEmpty) {
+                return;
+              }
+
+              int? numericValue = int.tryParse(text);
+              if (numericValue != null && numericValue >= minValue) {
+                onChanged(numericValue);
+              }
+            },
+            onSubmitted: (text) {
+              // Validate setelah user selesai input (tekan enter/done)
+              int numericValue = int.tryParse(text) ?? minValue;
+              if (numericValue < minValue) {
+                numericValue = minValue;
+                qtyController.text = minValue.toString();
+                qtyController.selection = TextSelection.fromPosition(
+                  TextPosition(offset: qtyController.text.length),
+                );
+              }
+              onChanged(numericValue);
+            },
+            onEditingComplete: () {
+              // Validate saat focus hilang atau user tap done
+              final text = qtyController.text;
+              if (text.isEmpty) {
+                qtyController.text = minValue.toString();
+                onChanged(minValue);
+              } else {
+                int numericValue = int.tryParse(text) ?? minValue;
+                if (numericValue < minValue) {
+                  numericValue = minValue;
+                  qtyController.text = minValue.toString();
+                }
+                onChanged(numericValue);
+              }
+            },
           ),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: 8),
         iconButton(
           icon: Icons.add,
           onPressed: () {
-            onChanged(value + 1);
+            final newValue = value + 1;
+            qtyController.text = newValue.toString();
+            onChanged(newValue);
           },
           color: color ?? Colors.grey.shade600,
           size: 20,

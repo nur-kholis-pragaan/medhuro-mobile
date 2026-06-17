@@ -124,8 +124,6 @@ class LoginResponse {
 
   factory LoginResponse.fromJson(String jsonString) {
     final json = _parseJson(jsonString);
-    print("haiaiai");
-    print(json);
     return LoginResponse(
       success: json['success'] as bool? ?? false,
       code: json['code'] as int? ?? 0,

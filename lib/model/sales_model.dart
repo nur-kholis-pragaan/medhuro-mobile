@@ -32,6 +32,8 @@ class SalesDataModel {
   String subtotalAmount;
   String discountAmount;
   String totalAmount;
+  String totalAmountEffective;
+  String returnAmount;
   String? paidAmount;
   String status;
   List<SalesItemModel> items;
@@ -51,6 +53,8 @@ class SalesDataModel {
     required this.subtotalAmount,
     required this.discountAmount,
     required this.totalAmount,
+    required this.totalAmountEffective,
+    required this.returnAmount,
     this.paidAmount,
     required this.status,
     required this.items,
@@ -72,6 +76,8 @@ class SalesDataModel {
       subtotalAmount: json['subtotal_amount']?.toString() ?? '0',
       discountAmount: json['discount_amount']?.toString() ?? '0',
       totalAmount: json['total_amount']?.toString() ?? '0',
+      totalAmountEffective: json['total_amount_effective']?.toString() ?? '0',
+      returnAmount: json['return_amount']?.toString() ?? '0',
       paidAmount: json['paid_amount']?.toString(),
       status: json['status'] ?? '',
       items: List<SalesItemModel>.from(

@@ -274,7 +274,7 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                 Row(
                                   children: [
                                     SizedBox(
-                                      width: 180,
+                                      width: 200,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -349,6 +349,8 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                           SizedBox(
                                             height: 36,
                                             child: FormWidget().qtyControl(
+                                              controller: _getQtyController(
+                                                  index, salesProvider),
                                               value: int.tryParse(
                                                       _getQtyController(index,
                                                               salesProvider)
@@ -363,7 +365,10 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                                         _getDiscountController(
                                                                 index,
                                                                 salesProvider)
-                                                            .text) ??
+                                                            .text
+                                                            .replaceAll('.', '')
+                                                            .replaceAll(
+                                                                ',', '')) ??
                                                     0;
                                                 salesProvider.updateItem(
                                                     index, newQty, discount);

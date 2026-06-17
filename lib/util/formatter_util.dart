@@ -25,4 +25,11 @@ class FormatterUtil {
   static String formatPriceWithCurrency(dynamic value) {
     return 'Rp. ${formatPrice(value)}';
   }
+
+  /// Format currency for double values (supports decimals)
+  /// Example: 72000.50 -> "Rp. 72.000"
+  static String formatCurrency(double value) {
+    final formatter = NumberFormat('#,##0', 'id_ID');
+    return 'Rp. ${formatter.format(value.toInt())}';
+  }
 }
