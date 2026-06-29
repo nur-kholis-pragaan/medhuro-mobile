@@ -193,7 +193,7 @@ class FormWidget {
     String? tooltip,
     double size = 24,
     double minWidth = 40,
-    double minHeight = 40,
+    double minHeight = 45,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -203,13 +203,17 @@ class FormWidget {
         ),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: IconButton(
-        icon: Icon(icon, size: size),
-        onPressed: onPressed,
-        color: color,
-        tooltip: tooltip,
-        constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
-        padding: const EdgeInsets.all(2),
+      child: SizedBox(
+        width: minWidth,
+        height: minHeight,
+        child: IconButton(
+          icon: Icon(icon, size: size),
+          onPressed: onPressed,
+          color: color,
+          tooltip: tooltip,
+          constraints: const BoxConstraints(minWidth: 20, minHeight: 20),
+          padding: const EdgeInsets.all(2),
+        ),
       ),
     );
   }
@@ -327,7 +331,7 @@ class FormWidget {
           color: color ?? Colors.grey.shade600,
           size: 20,
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 4),
         SizedBox(
           width: 50,
           child: TextField(
@@ -396,7 +400,7 @@ class FormWidget {
             },
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: 4),
         iconButton(
           icon: Icons.add,
           onPressed: () {
