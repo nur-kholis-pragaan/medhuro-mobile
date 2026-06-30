@@ -281,7 +281,7 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
                                   Row(
                                     children: [
                                       SizedBox(
-                                        width: 200,
+                                        width: 170,
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,

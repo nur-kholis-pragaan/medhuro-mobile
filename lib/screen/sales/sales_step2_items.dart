@@ -274,7 +274,7 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                 Row(
                                   children: [
                                     SizedBox(
-                                      width: 170,
+                                      width: 180,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
@@ -386,7 +386,7 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
                                 Row(
                                   children: [
                                     SizedBox(
-                                      width: 180,
+                                      width: 170,
                                       child: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
