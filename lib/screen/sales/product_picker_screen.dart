@@ -32,6 +32,9 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
   /// Qty counter untuk setiap product saat selection
   Map<int, int> productQtyCounter = {};
 
+  /// TextEditingControllers untuk qty input per product
+  Map<int, TextEditingController> qtyControllers = {};
+
   Future<ProductModel?> getProductData({
     String? search,
     String? page,
@@ -80,7 +83,18 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
     scrollController.dispose();
     searchController.dispose();
     focusNode.dispose();
+    qtyControllers.forEach((key, controller) => controller.dispose());
     super.dispose();
+  }
+
+  /// Safely get or create a controller for the given product
+  TextEditingController _getQtyController(int productId, int currentQty) {
+    if (!qtyControllers.containsKey(productId)) {
+      qtyControllers[productId] = TextEditingController(
+        text: currentQty.toString(),
+      );
+    }
+    return qtyControllers[productId]!;
   }
 
   void _addProduct(ProductDataModel product) {
@@ -120,6 +134,7 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
       // Reset counter
       setState(() {
         productQtyCounter[product.id] = 0;
+        qtyControllers[product.id]?.text = '0';
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -354,6 +369,8 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
                                   children: [
                                     // Qty Controls
                                     FormWidget().qtyControl(
+                                      controller: _getQtyController(
+                                          product.id, qty),
                                       value: qty,
                                       onChanged: (newQty) {
                                         setState(() {
