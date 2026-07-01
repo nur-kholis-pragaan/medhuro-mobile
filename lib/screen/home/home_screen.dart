@@ -4,12 +4,12 @@ import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:medhuro_mobile/screen/customer/customer_screen.dart';
 import 'package:medhuro_mobile/screen/product/product_screen.dart';
 import 'package:medhuro_mobile/screen/sales/my_sales_screen.dart';
-import 'package:medhuro_mobile/screen/sales/receivables_screen.dart';
 import 'package:medhuro_mobile/screen/sales/sales_wizard_screen.dart';
 import 'package:medhuro_mobile/screen/sales_payment/receivables_list_screen.dart';
 import 'package:medhuro_mobile/screen/sales_payment/payment_form_screen.dart';
 import 'package:medhuro_mobile/screen/profile/profile_screen.dart';
 import 'package:medhuro_mobile/util/formatter_util.dart';
+import 'package:medhuro_mobile/widget/dialong_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -68,6 +68,18 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  void _confirmLogout() {
+    Dialogs().showConfirmDialog(
+      context,
+      GlobalKey(),
+      'Apakah Anda yakin ingin keluar dari aplikasi?',
+      () {
+        Navigator.pop(context); // Close dialog
+        _logout();
+      },
+    );
+  }
+
   void _navigateTo(Widget screen) {
     Navigator.of(context).push(MaterialPageRoute(builder: (context) => screen));
   }
@@ -88,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Icons.logout,
               color: Colors.white,
             ),
-            onPressed: _logout,
+            onPressed: _confirmLogout,
             tooltip: 'Logout',
           ),
         ],
