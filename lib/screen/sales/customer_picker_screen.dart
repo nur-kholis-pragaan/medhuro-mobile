@@ -191,7 +191,7 @@ class _CustomerPickerScreenState extends State<CustomerPickerScreen> {
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            'Kode: ${customer.code}',
+                                            '${customer.code}',
                                             style: TextStyle(
                                               fontSize: 12,
                                               color: Colors.grey.shade600,
@@ -199,7 +199,9 @@ class _CustomerPickerScreenState extends State<CustomerPickerScreen> {
                                           ),
                                           const SizedBox(height: 4),
                                           Text(
-                                            customer.phoneNumber,
+                                            customer.address,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
                                               fontSize: 12,
                                               color: Colors.grey.shade600,
