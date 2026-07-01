@@ -50,10 +50,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     final stats = await _salesApi.getMyStats();
 
-    setState(() {
-      _stats = stats;
-      _isLoadingStats = false;
-    });
+    if (mounted) {
+      setState(() {
+        _stats = stats;
+        _isLoadingStats = false;
+      });
+    }
   }
 
   void _logout() async {
@@ -105,240 +107,246 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // User Info Section
-            Container(
-              padding: const EdgeInsets.all(PalletConfig.padding),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: PalletConfig.primaryColor,
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(20),
-                  bottomRight: Radius.circular(20),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          _loadStats();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // User Info Section
+              Container(
+                padding: const EdgeInsets.all(PalletConfig.padding),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: PalletConfig.primaryColor,
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(20),
+                    bottomRight: Radius.circular(20),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Halo, Selamat Datang 👋',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      userName,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      userEmail,
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.8),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Halo, Selamat Datang 👋',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    userName,
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Text(
-                    userEmail,
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.8),
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
-            ),
 
-            // Stats Cards Section
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: PalletConfig.padding,
-                vertical: PalletConfig.padding / 2,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Statistik Penjualan',
-                    style: TextStyle(
-                      fontSize: PalletConfig.fontLargeSize,
-                      fontWeight: FontWeight.bold,
-                      color: PalletConfig.shadePrimaryColor,
+              // Stats Cards Section
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: PalletConfig.padding,
+                  vertical: PalletConfig.padding / 2,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Statistik Penjualan',
+                      style: TextStyle(
+                        fontSize: PalletConfig.fontLargeSize,
+                        fontWeight: FontWeight.bold,
+                        color: PalletConfig.shadePrimaryColor,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 12),
-                  _isLoadingStats
-                      ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20.0),
-                            child: CircularProgressIndicator(
-                              color: PalletConfig.primaryColor,
-                            ),
-                          ),
-                        )
-                      : _stats == null
-                          ? Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(20.0),
-                                child: Column(
-                                  children: [
-                                    Icon(Icons.error_outline,
-                                        size: 48, color: Colors.grey),
-                                    SizedBox(height: 8),
-                                    Text(
-                                      'Gagal memuat statistik',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                    SizedBox(height: 8),
-                                    ElevatedButton.icon(
-                                      onPressed: _loadStats,
-                                      icon: Icon(Icons.refresh),
-                                      label: Text('Muat Ulang'),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            PalletConfig.primaryColor,
-                                        foregroundColor: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                    SizedBox(height: 12),
+                    _isLoadingStats
+                        ? Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: CircularProgressIndicator(
+                                color: PalletConfig.primaryColor,
                               ),
-                            )
-                          : Column(
-                              children: [
-                                // Row with 2 cards: Omzet Hari Ini & Omzet Bulan Ini
-                                Row(
-                                  children: [
-                                    // Omzet Hari Ini
-                                    Expanded(
-                                      child: _buildCompactStatsCard(
-                                        title: 'Omzet Hari Ini',
-                                        amount: _stats!['today']
-                                                ['total_amount_effective']
-                                            .toDouble(),
-                                        count: _stats!['today']
-                                            ['transaction_count'],
-                                        icon: Icons.today,
-                                        gradientColors: [
-                                          PalletConfig.primaryColor,
-                                          PalletConfig.primaryColor
-                                              .withOpacity(0.7),
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(width: 12),
-                                    // Omzet Bulan Ini
-                                    Expanded(
-                                      child: _buildCompactStatsCard(
-                                        title: 'Omzet Bulan Ini',
-                                        amount: _stats!['month']
-                                                ['total_amount_effective']
-                                            .toDouble(),
-                                        count: _stats!['month']
-                                            ['transaction_count'],
-                                        icon: Icons.calendar_month,
-                                        gradientColors: [
-                                          Colors.green,
-                                          Colors.green.withOpacity(0.7),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
                             ),
-                ],
+                          )
+                        : _stats == null
+                            ? Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(20.0),
+                                  child: Column(
+                                    children: [
+                                      Icon(Icons.error_outline,
+                                          size: 48, color: Colors.grey),
+                                      SizedBox(height: 8),
+                                      Text(
+                                        'Gagal memuat statistik',
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                      SizedBox(height: 8),
+                                      ElevatedButton.icon(
+                                        onPressed: _loadStats,
+                                        icon: Icon(Icons.refresh),
+                                        label: Text('Muat Ulang'),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor:
+                                              PalletConfig.primaryColor,
+                                          foregroundColor: Colors.white,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              )
+                            : Column(
+                                children: [
+                                  // Row with 2 cards: Omzet Hari Ini & Omzet Bulan Ini
+                                  Row(
+                                    children: [
+                                      // Omzet Hari Ini
+                                      Expanded(
+                                        child: _buildCompactStatsCard(
+                                          title: 'Omzet Hari Ini',
+                                          amount: _stats!['today']
+                                                  ['total_amount_effective']
+                                              .toDouble(),
+                                          count: _stats!['today']
+                                              ['transaction_count'],
+                                          icon: Icons.today,
+                                          gradientColors: [
+                                            PalletConfig.primaryColor,
+                                            PalletConfig.primaryColor
+                                                .withOpacity(0.7),
+                                          ],
+                                        ),
+                                      ),
+                                      SizedBox(width: 12),
+                                      // Omzet Bulan Ini
+                                      Expanded(
+                                        child: _buildCompactStatsCard(
+                                          title: 'Omzet Bulan Ini',
+                                          amount: _stats!['month']
+                                                  ['total_amount_effective']
+                                              .toDouble(),
+                                          count: _stats!['month']
+                                              ['transaction_count'],
+                                          icon: Icons.calendar_month,
+                                          gradientColors: [
+                                            Colors.green,
+                                            Colors.green.withOpacity(0.7),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                  ],
+                ),
               ),
-            ),
 
-            SizedBox(height: 16),
+              SizedBox(height: 16),
 
-            // Menu Section
-            Padding(
-              padding: const EdgeInsets.all(PalletConfig.padding),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Menu Utama',
-                    style: TextStyle(
-                      fontSize: PalletConfig.fontLargeSize,
-                      fontWeight: FontWeight.bold,
-                      color: PalletConfig.shadePrimaryColor,
+              // Menu Section
+              Padding(
+                padding: const EdgeInsets.all(PalletConfig.padding),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Menu Utama',
+                      style: TextStyle(
+                        fontSize: PalletConfig.fontLargeSize,
+                        fontWeight: FontWeight.bold,
+                        color: PalletConfig.shadePrimaryColor,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  GridView.count(
-                    crossAxisCount: 3,
-                    crossAxisSpacing: 12,
-                    mainAxisSpacing: 12,
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    children: [
-                      _buildMenuCard(
-                        icon: Icons.shopping_bag,
-                        title: 'Produk',
-                        color: PalletConfig.primaryColor,
-                        onTap: () => _navigateTo(ProductScreen()),
-                      ),
-                      _buildMenuCard(
-                        icon: Icons.add_circle_outline,
-                        title: 'Buat Penjualan',
-                        color: PalletConfig.primaryColor,
-                        onTap: () => _navigateTo(SalesWizardScreen()),
-                      ),
-                      _buildMenuCard(
-                        icon: Icons.receipt_long,
-                        title: 'Penjualan Saya',
-                        color: PalletConfig.primaryColor,
-                        onTap: () => _navigateTo(MySalesScreen()),
-                      ),
-                      _buildMenuCard(
-                        icon: Icons.account_balance_wallet,
-                        title: 'Daftar Piutang',
-                        color: PalletConfig.primaryColor,
-                        onTap: () => _navigateTo(ReceivablesListScreen()),
-                      ),
-                      _buildMenuCard(
-                        icon: Icons.payment,
-                        title: 'Bayar Piutang',
-                        color: PalletConfig.primaryColor,
-                        onTap: () => _navigateTo(PaymentFormScreen()),
-                      ),
-                      _buildMenuCard(
-                        icon: Icons.people,
-                        title: 'Pelanggan',
-                        color: PalletConfig.primaryColor,
-                        onTap: () => _navigateTo(CustomerScreen()),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 24),
-                  Text(
-                    'Pengaturan',
-                    style: TextStyle(
-                      fontSize: PalletConfig.fontLargeSize,
-                      fontWeight: FontWeight.bold,
-                      color: PalletConfig.shadePrimaryColor,
+                    SizedBox(height: 16),
+                    GridView.count(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 12,
+                      mainAxisSpacing: 12,
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      children: [
+                        _buildMenuCard(
+                          icon: Icons.shopping_bag,
+                          title: 'Produk',
+                          color: PalletConfig.primaryColor,
+                          onTap: () => _navigateTo(ProductScreen()),
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.add_circle_outline,
+                          title: 'Buat Penjualan',
+                          color: PalletConfig.primaryColor,
+                          onTap: () => _navigateTo(SalesWizardScreen()),
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.receipt_long,
+                          title: 'Penjualan Saya',
+                          color: PalletConfig.primaryColor,
+                          onTap: () => _navigateTo(MySalesScreen()),
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.account_balance_wallet,
+                          title: 'Daftar Piutang',
+                          color: PalletConfig.primaryColor,
+                          onTap: () => _navigateTo(ReceivablesListScreen()),
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.payment,
+                          title: 'Bayar Piutang',
+                          color: PalletConfig.primaryColor,
+                          onTap: () => _navigateTo(PaymentFormScreen()),
+                        ),
+                        _buildMenuCard(
+                          icon: Icons.people,
+                          title: 'Pelanggan',
+                          color: PalletConfig.primaryColor,
+                          onTap: () => _navigateTo(CustomerScreen()),
+                        ),
+                      ],
                     ),
-                  ),
-                  SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: _buildMenuCard(
-                      icon: Icons.person,
-                      title: 'Profil',
-                      color: PalletConfig.primaryColor,
-                      onTap: () => _navigateTo(const ProfileScreen()),
-                      isFullWidth: true,
+                    SizedBox(height: 24),
+                    Text(
+                      'Pengaturan',
+                      style: TextStyle(
+                        fontSize: PalletConfig.fontLargeSize,
+                        fontWeight: FontWeight.bold,
+                        color: PalletConfig.shadePrimaryColor,
+                      ),
                     ),
-                  ),
-                ],
+                    SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: _buildMenuCard(
+                        icon: Icons.person,
+                        title: 'Profil',
+                        color: PalletConfig.primaryColor,
+                        onTap: () => _navigateTo(const ProfileScreen()),
+                        isFullWidth: true,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
