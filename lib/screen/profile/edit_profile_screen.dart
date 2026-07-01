@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:medhuro_mobile/api/auth_api.dart';
 import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:medhuro_mobile/model/user_model.dart';
-import 'package:medhuro_mobile/widget/form_widget.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -91,7 +90,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Profil berhasil diperbarui')),
+            const SnackBar(
+              content: Text('Profil berhasil diperbarui'),
+              backgroundColor: Colors.green,
+            ),
           );
           Navigator.of(context).pop();
         }
@@ -100,6 +102,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(response?.message ?? 'Gagal memperbarui profil'),
+              backgroundColor: Colors.red,
             ),
           );
         }
@@ -110,8 +113,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       });
 
       if (mounted) {
+        print('Error updating profile: ${e.toString()}');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: ${e.toString()}')),
+          SnackBar(
+            content: Text('Terjadi kesalahan: ${e.toString()}'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }

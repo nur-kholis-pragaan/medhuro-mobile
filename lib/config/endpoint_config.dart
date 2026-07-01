@@ -5,6 +5,7 @@ class EndpointConfig {
   static const Map<String, String> path = {
     'auth.login': '/api/auth/login',
     'auth.logout': '/api/auth/logout',
+    'auth.profile': '/api/auth/profile',
     'auth': '/api/auth',
     'product': '/api/product',
     'customer': '/api/customers',
