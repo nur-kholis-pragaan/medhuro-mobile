@@ -49,8 +49,8 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
     for (int i = 0; i < salesProvider.returnItems.length; i++) {
       final item = salesProvider.returnItems[i];
       qtyControllers[i] = TextEditingController(text: item.qty.toString());
-      discountControllers[i] =
-          TextEditingController(text: item.discountAmount.toString());
+      discountControllers[i] = TextEditingController(
+          text: FormatterUtil.formatPrice(item.discountAmount));
       priceControllers[i] = TextEditingController(
         text: FormatterUtil.formatPrice(item.price),
       );
@@ -105,7 +105,8 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
       int index, SalesProvider provider) {
     if (!discountControllers.containsKey(index)) {
       discountControllers[index] = TextEditingController(
-        text: provider.returnItems[index].discountAmount.toString(),
+        text: FormatterUtil.formatPrice(
+            provider.returnItems[index].discountAmount),
       );
     }
     return discountControllers[index]!;
@@ -189,7 +190,7 @@ class _SalesStep3ReturnItemsState extends State<SalesStep3ReturnItems> {
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              'Retur bersifat opsional. Jika tidak ada retur, lanjut ke step berikutnya.',
+                              'Retur bersifat opsional. Jika tidak ada retur, lanjut ke step berikutnya, diskon retur tidak dihitungkan pada total penjualan.',
                               style: TextStyle(
                                 fontSize: 12,
                                 color: _amberAccentColor,

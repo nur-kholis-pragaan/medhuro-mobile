@@ -44,8 +44,8 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
     for (int i = 0; i < salesProvider.items.length; i++) {
       final item = salesProvider.items[i];
       qtyControllers[i] = TextEditingController(text: item.qty.toString());
-      discountControllers[i] =
-          TextEditingController(text: item.discountAmount.toString());
+      discountControllers[i] = TextEditingController(
+          text: FormatterUtil.formatPrice(item.discountAmount));
       priceControllers[i] = TextEditingController(
         text: FormatterUtil.formatPrice(item.price),
       );
@@ -76,7 +76,7 @@ class _SalesStep2ItemsState extends State<SalesStep2Items> {
       int index, SalesProvider provider) {
     if (!discountControllers.containsKey(index)) {
       discountControllers[index] = TextEditingController(
-        text: provider.items[index].discountAmount.toString(),
+        text: FormatterUtil.formatPrice(provider.items[index].discountAmount),
       );
     }
     return discountControllers[index]!;

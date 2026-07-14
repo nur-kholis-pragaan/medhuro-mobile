@@ -32,8 +32,14 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
   /// Qty counter untuk setiap product saat selection
   Map<int, int> productQtyCounter = {};
 
+  /// Discount counter untuk setiap product saat selection
+  Map<int, int> productDiscountCounter = {};
+
   /// TextEditingControllers untuk qty input per product
   Map<int, TextEditingController> qtyControllers = {};
+
+  /// TextEditingControllers untuk discount input per product
+  Map<int, TextEditingController> discountControllers = {};
 
   Future<ProductModel?> getProductData({
     String? search,
@@ -84,6 +90,7 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
     searchController.dispose();
     focusNode.dispose();
     qtyControllers.forEach((key, controller) => controller.dispose());
+    discountControllers.forEach((key, controller) => controller.dispose());
     super.dispose();
   }
 
@@ -97,9 +104,18 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
     return qtyControllers[productId]!;
   }
 
+  /// Safely get or create a discount controller for the given product
+  TextEditingController _getDiscountController(int productId) {
+    if (!discountControllers.containsKey(productId)) {
+      discountControllers[productId] = TextEditingController(text: '0');
+    }
+    return discountControllers[productId]!;
+  }
+
   void _addProduct(ProductDataModel product) {
     final salesProvider = Provider.of<SalesProvider>(context, listen: false);
     int qty = productQtyCounter[product.id] ?? 0;
+    int discount = productDiscountCounter[product.id] ?? 0;
 
     if (qty > 0) {
       if (widget.isReturnMode) {
@@ -110,6 +126,7 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
           unit: 'carton',
           qty: qty,
           price: product.sellingPriceCarton,
+          discountAmount: discount,
           sellingPriceCarton: product.sellingPriceCarton,
           sellingPricePack: product.sellingPricePack,
           sellingPricePcs: product.sellingPricePcs,
@@ -122,6 +139,7 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
           unit: 'carton',
           qty: qty,
           price: product.sellingPriceCarton,
+          discountAmount: discount,
           sellingPriceCarton: product.sellingPriceCarton,
           sellingPricePack: product.sellingPricePack,
           sellingPricePcs: product.sellingPricePcs,
@@ -135,6 +153,8 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
       setState(() {
         productQtyCounter[product.id] = 0;
         qtyControllers[product.id]?.text = '0';
+        productDiscountCounter[product.id] = 0;
+        discountControllers[product.id]?.text = '0';
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -362,39 +382,92 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 8),
-                                // Qty Control
+                                // Qty, Discount & Add Button (Single Row)
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    // Qty Controls
-                                    FormWidget().qtyControl(
-                                      controller: _getQtyController(
-                                          product.id, qty),
-                                      value: qty,
-                                      onChanged: (newQty) {
-                                        setState(() {
-                                          productQtyCounter[product.id] =
-                                              newQty;
-                                        });
-                                      },
-                                      minValue: 0,
+                                    // Qty Controls with label
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Qty:',
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.grey.shade700,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 2),
+                                        FormWidget().qtyControl(
+                                          controller: _getQtyController(
+                                              product.id, qty),
+                                          value: qty,
+                                          onChanged: (newQty) {
+                                            setState(() {
+                                              productQtyCounter[product.id] =
+                                                  newQty;
+                                            });
+                                          },
+                                          minValue: 0,
+                                        ),
+                                      ],
                                     ),
-                                    // Add Button
-                                    ElevatedButton.icon(
-                                      onPressed: qty > 0
-                                          ? () => _addProduct(product)
-                                          : null,
-                                      icon: const Icon(Icons.add),
-                                      label: const Text('Tambah'),
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            PalletConfig.primaryColor,
-                                        disabledBackgroundColor:
-                                            Colors.grey.shade300,
-                                        foregroundColor: Colors.white,
-                                        disabledForegroundColor:
-                                            Colors.grey.shade600,
+                                    const SizedBox(width: 8),
+                                    // Discount Input with label
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            'Disc:',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.grey.shade700,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 2),
+                                          FormWidget().currencyInput(
+                                            controller: _getDiscountController(
+                                                product.id),
+                                            label: '0',
+                                            onChanged: (value) {
+                                              setState(() {
+                                                productDiscountCounter[
+                                                    product.id] = value;
+                                              });
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    // Add Button (with top padding to align)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 16),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: qty > 0
+                                              ? PalletConfig.primaryColor
+                                              : Colors.grey.shade300,
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                        ),
+                                        child: IconButton(
+                                          onPressed: qty > 0
+                                              ? () => _addProduct(product)
+                                              : null,
+                                          icon: const Icon(Icons.add,
+                                              color: Colors.white, size: 22),
+                                          tooltip: 'Tambah',
+                                          constraints: const BoxConstraints(
+                                            minWidth: 40,
+                                            minHeight: 40,
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ],
