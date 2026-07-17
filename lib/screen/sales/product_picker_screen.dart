@@ -189,6 +189,17 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
               decoration: InputDecoration(
                 hintText: 'Cari produk...',
                 prefixIcon: const Icon(Icons.search),
+                suffixIcon: searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          setState(() {
+                            searchController.clear();
+                            future = getProductData();
+                          });
+                        },
+                      )
+                    : null,
                 border: OutlineInputBorder(
                   borderRadius:
                       BorderRadius.circular(PalletConfig.borderRadius),

@@ -100,6 +100,17 @@ class _CustomerPickerScreenState extends State<CustomerPickerScreen> {
               decoration: InputDecoration(
                 hintText: 'Cari customer...',
                 prefixIcon: const Icon(Icons.search),
+                suffixIcon: searchController.text.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          setState(() {
+                            searchController.clear();
+                            future = getCustomerData();
+                          });
+                        },
+                      )
+                    : null,
                 border: OutlineInputBorder(
                   borderRadius:
                       BorderRadius.circular(PalletConfig.borderRadius),
