@@ -179,8 +179,12 @@ class _SalesStep4ConfirmationState extends State<SalesStep4Confirmation> {
         );
       }
     } catch (e) {
+      String errorMessage = e.toString();
+      if (errorMessage.startsWith('Exception: ')) {
+        errorMessage = errorMessage.substring('Exception: '.length);
+      }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
+        SnackBar(content: Text(errorMessage)),
       );
     } finally {
       setState(() {

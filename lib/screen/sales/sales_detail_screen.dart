@@ -293,6 +293,26 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
     );
   }
 
+  // Get dynamic qty display for sales item
+  String _getSalesItemQtyDisplay(SalesItemModel item) {
+    List<String> parts = [];
+    if (item.qtyCarton > 0) parts.add('${item.qtyCarton} Ctn');
+    if (item.qtyPack > 0) parts.add('${item.qtyPack} Pkg');
+    if (item.qtyPcs > 0) parts.add('${item.qtyPcs} Pcs');
+    if (parts.isEmpty) parts.add('${item.qtyCarton}');
+    return parts.join(', ');
+  }
+
+  // Get dynamic qty display for return item
+  String _getReturnItemQtyDisplay(SalesReturnItemInfo item) {
+    List<String> parts = [];
+    if (item.qtyCarton > 0) parts.add('${item.qtyCarton} Ctn');
+    if (item.qtyPack > 0) parts.add('${item.qtyPack} Pkg');
+    if (item.qtyPcs > 0) parts.add('${item.qtyPcs} Pcs');
+    if (parts.isEmpty) parts.add('0');
+    return parts.join(', ');
+  }
+
   // Single Item Row
   Widget _buildItemRow(SalesItemModel item) {
     return Container(
@@ -321,7 +341,7 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
                 style: TextStyle(fontSize: 11, color: Colors.grey),
               ),
               Text(
-                'Qty: ${item.qtyCarton}',
+                'Qty: ${_getSalesItemQtyDisplay(item)}',
                 style: TextStyle(fontSize: 11, color: Colors.grey),
               ),
             ],
@@ -455,7 +475,7 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Qty: ${item.qtyCarton > 0 ? item.qtyCarton : item.qtyPack > 0 ? item.qtyPack : item.qtyPcs} ${item.unit}',
+                'Qty: ${_getReturnItemQtyDisplay(item)}',
                 style: TextStyle(fontSize: 12),
               ),
               Text(

@@ -41,6 +41,9 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
   /// TextEditingControllers untuk discount input per product
   Map<int, TextEditingController> discountControllers = {};
 
+  /// Selected unit per product (default: carton)
+  Map<int, String> selectedUnit = {};
+
   Future<ProductModel?> getProductData({
     String? search,
     String? page,
@@ -94,6 +97,79 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
     super.dispose();
   }
 
+  /// Get selected unit for product
+  String _getSelectedUnit(int productId) => selectedUnit[productId] ?? 'carton';
+
+  /// Get price based on unit
+  int _getPriceForUnit(ProductDataModel product, String unit) {
+    switch (unit) {
+      case 'pack':
+        return product.sellingPricePack;
+      case 'pcs':
+        return product.sellingPricePcs;
+      default:
+        return product.sellingPriceCarton;
+    }
+  }
+
+  /// Get unit display label
+  String _getUnitLabel(String unit) {
+    switch (unit) {
+      case 'carton':
+        return 'Ctn';
+      case 'pack':
+        return 'Pkg';
+      case 'pcs':
+        return 'Pcs';
+      default:
+        return 'Ctn';
+    }
+  }
+
+  /// Build tappable unit selector widget
+  Widget _buildUnitSelector({
+    required ProductDataModel product,
+    required String unit,
+    required String label,
+    required int qty,
+  }) {
+    final isSelected = _getSelectedUnit(product.id) == unit;
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedUnit[product.id] = unit;
+        });
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: isSelected ? PalletConfig.primaryColor : Colors.transparent,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Column(
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 9,
+                color: isSelected ? Colors.white : Colors.grey.shade600,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              ),
+            ),
+            Text(
+              '$qty',
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 11,
+                color: isSelected ? Colors.white : Colors.black,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   /// Safely get or create a controller for the given product
   TextEditingController _getQtyController(int productId, int currentQty) {
     if (!qtyControllers.containsKey(productId)) {
@@ -123,9 +199,9 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
           productId: product.id,
           productName: product.name,
           productCode: product.code,
-          unit: 'carton',
+          unit: _getSelectedUnit(product.id),
           qty: qty,
-          price: product.sellingPriceCarton,
+          price: _getPriceForUnit(product, _getSelectedUnit(product.id)),
           discountAmount: discount,
           sellingPriceCarton: product.sellingPriceCarton,
           sellingPricePack: product.sellingPricePack,
@@ -136,9 +212,9 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
           productId: product.id,
           productName: product.name,
           productCode: product.code,
-          unit: 'carton',
+          unit: _getSelectedUnit(product.id),
           qty: qty,
-          price: product.sellingPriceCarton,
+          price: _getPriceForUnit(product, _getSelectedUnit(product.id)),
           discountAmount: discount,
           sellingPriceCarton: product.sellingPriceCarton,
           sellingPricePack: product.sellingPricePack,
@@ -295,7 +371,9 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
                                     // Price Display
                                     Expanded(
                                       child: Container(
-                                        padding: const EdgeInsets.all(12),
+                                        padding: const EdgeInsetsDirectional
+                                            .symmetric(
+                                            vertical: 16, horizontal: 6),
                                         decoration: BoxDecoration(
                                           color: PalletConfig.primaryColor
                                               .withOpacity(0.1),
@@ -306,7 +384,7 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
                                           ),
                                         ),
                                         child: Text(
-                                          'Harga: ${FormatterUtil.formatPriceWithCurrency(product.sellingPriceCarton)}',
+                                          'Harga (${_getUnitLabel(_getSelectedUnit(product.id))}): ${FormatterUtil.formatPriceWithCurrency(_getPriceForUnit(product, _getSelectedUnit(product.id)))}',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: 13,
@@ -315,7 +393,7 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    // Inventory Display
+                                    // Unit Selector (Inventory)
                                     Expanded(
                                       child: Container(
                                         padding: const EdgeInsets.all(8),
@@ -332,59 +410,23 @@ class _ProductPickerScreenState extends State<ProductPickerScreen> {
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceEvenly,
                                           children: [
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  'Ctn',
-                                                  style: TextStyle(
-                                                    fontSize: 9,
-                                                    color: Colors.grey.shade600,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${product.inventory.qtyCarton}',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 11,
-                                                  ),
-                                                ),
-                                              ],
+                                            _buildUnitSelector(
+                                              product: product,
+                                              unit: 'carton',
+                                              label: 'Ctn',
+                                              qty: product.inventory.qtyCarton,
                                             ),
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  'Pkg',
-                                                  style: TextStyle(
-                                                    fontSize: 9,
-                                                    color: Colors.grey.shade600,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${product.inventory.qtyPack}',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 11,
-                                                  ),
-                                                ),
-                                              ],
+                                            _buildUnitSelector(
+                                              product: product,
+                                              unit: 'pack',
+                                              label: 'Pkg',
+                                              qty: product.inventory.qtyPack,
                                             ),
-                                            Column(
-                                              children: [
-                                                Text(
-                                                  'Pcs',
-                                                  style: TextStyle(
-                                                    fontSize: 9,
-                                                    color: Colors.grey.shade600,
-                                                  ),
-                                                ),
-                                                Text(
-                                                  '${product.inventory.qtyPcs}',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 11,
-                                                  ),
-                                                ),
-                                              ],
+                                            _buildUnitSelector(
+                                              product: product,
+                                              unit: 'pcs',
+                                              label: 'Pcs',
+                                              qty: product.inventory.qtyPcs,
                                             ),
                                           ],
                                         ),

@@ -100,6 +100,9 @@ class SalesItemModel {
   int productId;
   ProductInfo product;
   int qtyCarton;
+  int qtyPack;
+  int qtyPcs;
+  String unit;
   String price;
   String discountAmount;
   String subtotal;
@@ -109,6 +112,9 @@ class SalesItemModel {
     required this.productId,
     required this.product,
     required this.qtyCarton,
+    this.qtyPack = 0,
+    this.qtyPcs = 0,
+    this.unit = '',
     required this.price,
     required this.discountAmount,
     required this.subtotal,
@@ -120,6 +126,9 @@ class SalesItemModel {
       productId: json['product_id'] ?? 0,
       product: ProductInfo.fromJson(json['product']),
       qtyCarton: json['qty_carton'] ?? 0,
+      qtyPack: json['qty_pack'] ?? 0,
+      qtyPcs: json['qty_pcs'] ?? 0,
+      unit: json['unit'] ?? '',
       price: json['price']?.toString() ?? '0',
       discountAmount: json['discount_amount']?.toString() ?? '0',
       subtotal: json['subtotal']?.toString() ?? '0',

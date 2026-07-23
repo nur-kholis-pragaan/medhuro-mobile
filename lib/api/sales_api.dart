@@ -49,12 +49,17 @@ class SalesApi {
         final jsonResponse = json.decode(response.body);
         return SalesDataModel.fromJson(jsonResponse['data']);
       } else {
-        print('Error: ${response.statusCode} - ${response.body}');
-        return null;
+        final jsonResponse = json.decode(response.body);
+        String errorMessage =
+            jsonResponse['message'] ?? 'Gagal membuat penjualan';
+        throw Exception(errorMessage);
       }
     } catch (e) {
+      if (e is Exception) {
+        rethrow; // Propagate API error to caller
+      }
       print(e.toString());
-      return null;
+      return null; // Return null for unexpected errors
     }
   }
 
