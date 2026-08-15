@@ -200,4 +200,87 @@ class SalesPaymentApi {
       };
     }
   }
+
+  /// Mark a receivable as fully paid
+  /// POST /api/sales-payments/{id}/mark-as-paid
+  Future<Map<String, dynamic>?> markAsPaid(int termId) async {
+    try {
+      final uri = Uri.https(
+        EndpointConfig.domain,
+        '${EndpointConfig.path['sales_payments']}/$termId/mark-as-paid',
+      );
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final response = await http.post(
+        uri,
+        headers: {
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+      );
+
+      final jsonResponse = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message': jsonResponse['message'] ?? 'Piutang berhasil dilunasi',
+        };
+      } else {
+        return {
+          'success': false,
+          'message': jsonResponse['message'] ?? 'Gagal melunasi piutang',
+        };
+      }
+    } catch (e) {
+      print('SalesPaymentApi.markAsPaid error: ${e.toString()}');
+      return {
+        'success': false,
+        'message': 'Error: ${e.toString()}',
+      };
+    }
+  }
+
+  /// Cancel paid status for a receivable
+  /// POST /api/sales-payments/{id}/cancel-paid
+  Future<Map<String, dynamic>?> cancelPaid(int termId) async {
+    try {
+      final uri = Uri.https(
+        EndpointConfig.domain,
+        '${EndpointConfig.path['sales_payments']}/$termId/cancel-paid',
+      );
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      final response = await http.post(
+        uri,
+        headers: {
+          'Authorization': 'Bearer ${prefs.getString("token")}',
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+        },
+      );
+
+      final jsonResponse = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        return {
+          'success': true,
+          'message':
+              jsonResponse['message'] ?? 'Pembayaran berhasil dibatalkan',
+        };
+      } else {
+        return {
+          'success': false,
+          'message': jsonResponse['message'] ?? 'Gagal membatalkan pembayaran',
+        };
+      }
+    } catch (e) {
+      print('SalesPaymentApi.cancelPaid error: ${e.toString()}');
+      return {
+        'success': false,
+        'message': 'Error: ${e.toString()}',
+      };
+    }
+  }
 }

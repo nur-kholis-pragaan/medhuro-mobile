@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medhuro_mobile/api/sales_api.dart';
+import 'package:medhuro_mobile/api/sales_payment_api.dart';
 import 'package:medhuro_mobile/model/sales_model.dart';
 import 'package:medhuro_mobile/config/pallet_config.dart';
 import 'package:medhuro_mobile/util/formatter_util.dart';
@@ -772,6 +773,27 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
               ],
             ),
           ],
+          if (term.status.toLowerCase() == 'completed') ...[
+            SizedBox(height: 10),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () => _cancelPaid(term),
+                icon: Icon(Icons.cancel_outlined,
+                    size: 16, color: PalletConfig.errorColor),
+                label: Text('Batal Lunas',
+                    style: TextStyle(
+                        color: PalletConfig.errorColor, fontSize: 12)),
+                style: OutlinedButton.styleFrom(
+                  side: BorderSide(color: PalletConfig.errorColor),
+                  padding: EdgeInsets.symmetric(vertical: 8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ],
       ),
     );
@@ -902,5 +924,73 @@ class _SalesDetailScreenState extends State<SalesDetailScreen> {
     }
 
     return rows;
+  }
+
+  void _cancelPaid(PaymentTermInfo term) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Batalkan Pembayaran?'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+                'Riwayat pembayaran akan dihapus dan status dikembalikan ke belum dibayar.'),
+            SizedBox(height: 12),
+            Text('Invoice: ${term.name}',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Batal'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: PalletConfig.errorColor,
+            ),
+            onPressed: () {
+              Navigator.pop(ctx);
+              _executeCancelPaid(term.id);
+            },
+            child: Text('Ya, Batalkan', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _executeCancelPaid(int termId) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Center(child: CircularProgressIndicator()),
+    );
+
+    final result = await SalesPaymentApi().cancelPaid(termId);
+
+    Navigator.pop(context); // dismiss loading
+
+    if (result != null && result['success'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message'] ?? 'Pembayaran berhasil dibatalkan'),
+          backgroundColor: PalletConfig.successColor,
+        ),
+      );
+      // Refresh the detail data
+      setState(() {
+        future = SalesApi().getSalesDetail(widget.salesId);
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result?['message'] ?? 'Gagal membatalkan pembayaran'),
+          backgroundColor: PalletConfig.errorColor,
+        ),
+      );
+    }
   }
 }

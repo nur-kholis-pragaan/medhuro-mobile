@@ -31,6 +31,7 @@ class SalesPaymentTermDataModel {
   String salesmanName;
   String type; // tempo, credit, cash
   String? dueDate;
+  String? salesDate;
   double amount;
   double paidAmount;
   double remaining;
@@ -48,6 +49,7 @@ class SalesPaymentTermDataModel {
     required this.salesmanName,
     required this.type,
     this.dueDate,
+    this.salesDate,
     required this.amount,
     required this.paidAmount,
     required this.remaining,
@@ -123,6 +125,7 @@ class SalesPaymentTermDataModel {
       salesmanName: salesmanName,
       type: json['type'] ?? 'tempo',
       dueDate: json['due_date'],
+      salesDate: json['sales']?['sales_date'],
       amount: amount,
       paidAmount: paidAmount,
       remaining: remaining,

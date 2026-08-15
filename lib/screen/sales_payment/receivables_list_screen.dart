@@ -176,6 +176,76 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
     }
   }
 
+  void _markAsPaid(SalesPaymentTermDataModel item) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Konfirmasi Pelunasan'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Apakah Anda yakin ingin melunasi piutang ini?'),
+            SizedBox(height: 12),
+            Text('Invoice: ${item.invoice}',
+                style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('Sisa Piutang: ${_formatCurrency(item.remaining)}',
+                style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: PalletConfig.errorColor)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text('Batal'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: PalletConfig.successColor,
+            ),
+            onPressed: () async {
+              Navigator.pop(ctx);
+              _executeMarkAsPaid(int.parse(item.id));
+            },
+            child: Text('Ya, Lunasi', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _executeMarkAsPaid(int termId) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => Center(child: CircularProgressIndicator()),
+    );
+
+    final result = await SalesPaymentApi().markAsPaid(termId);
+
+    Navigator.pop(context); // dismiss loading
+
+    if (result != null && result['success'] == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result['message'] ?? 'Piutang berhasil dilunasi'),
+          backgroundColor: PalletConfig.successColor,
+        ),
+      );
+      setState(() {
+        future = getReceivablesData();
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result?['message'] ?? 'Gagal melunasi piutang'),
+          backgroundColor: PalletConfig.errorColor,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -449,13 +519,19 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text(
-                                            'Toko',
-                                            style: TextStyle(
-                                              fontSize: 11,
-                                              color: Colors.grey[600],
+                                          if (item.salesDate != null &&
+                                              item.salesDate!.isNotEmpty)
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.only(top: 2),
+                                              child: Text(
+                                                _formatDate(item.salesDate),
+                                                style: TextStyle(
+                                                  fontSize: 10,
+                                                  color: Colors.grey[500],
+                                                ),
+                                              ),
                                             ),
-                                          ),
                                           Text(
                                             item.customerName,
                                             style: TextStyle(
@@ -550,6 +626,29 @@ class _ReceivablesListScreenState extends State<ReceivablesListScreen> {
                                                     item.status),
                                               )),
                                         ],
+                                      ),
+                                      SizedBox(height: 8),
+                                      SizedBox(
+                                        width: double.infinity,
+                                        child: ElevatedButton.icon(
+                                          onPressed: () => _markAsPaid(item),
+                                          icon: Icon(Icons.check_circle,
+                                              size: 16, color: Colors.white),
+                                          label: Text('Lunas',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 12)),
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor:
+                                                PalletConfig.successColor,
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 8),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                        ),
                                       ),
                                     ],
                                   ),
