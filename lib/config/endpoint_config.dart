@@ -1,5 +1,5 @@
 class EndpointConfig {
-  static const String domain = 'dev-medhuro.inalife.id';
+  static const String domain = 'medhuro.my.id';
   // static const String domain = 'unfumbled-otiosely-brigida.ngrok-free.dev';
 
   static const Map<String, String> path = {
